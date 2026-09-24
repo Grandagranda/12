@@ -1,7 +1,8 @@
 // Ролик: блок «О проекте» уезжает вверх и открывает видео, которое стоит на месте.
 // Пока окно приоткрыто — кадр почти чёрный, затемнение уходит до макетного по мере прокрутки.
-// Кнопка «смотреть» стоит под надписью и тянется за курсором (как на первом экране Peroni):
-// курсор остаётся обычным, кнопка заметно отстаёт и, догнав, заливается акцентом.
+// Кнопка плеера стоит под надписью справа (как в макете) и тянется за курсором (как на первом
+// экране Peroni): курсор остаётся обычным, кнопка заметно отстаёт. Как только курсор оказался
+// внутри круга — акцент растекается из точки входа; вышел за круг — стекает в точку выхода.
 // Пока в кадре — играет без звука; клик открывает полный просмотр со звуком.
 (function () {
   const root = document.documentElement;
@@ -20,14 +21,17 @@
 
   let box = { l: 0, t: 0, r: 0, b: 0 };   // видимая часть ролика (окно секции) в px окна
   const ptr = { x: 0, y: 0, in: false, seen: false };
-  let home = { x: 0, y: 0 }, pos = null, R = 70;
+  let home = { x: 0, y: 0 }, pos = null, R = 55;
   let raf = 0, last = 0, caught = false;
 
-  // дом кнопки — по центру, под надписью
+  // дом кнопки — под надписью, правее центра: в макете круг 109 px стоит в 1.7rem под текстом,
+  // его центр на 25.35rem правее середины кадра; на узком экране — просто по центру
   function measureHome() {
     R = btn.offsetWidth / 2;
+    const rem = parseFloat(getComputedStyle(root).fontSize);
     const c = copy.getBoundingClientRect();
-    home = { x: innerWidth / 2, y: c.bottom + R + innerWidth * 0.028 };
+    const x = innerWidth > 900 ? innerWidth / 2 + 25.35 * rem : innerWidth / 2;
+    home = { x: Math.min(x, innerWidth - R - 16), y: c.bottom + 1.7 * rem + R };
   }
 
   // ── скролл: ролик прибит к окну, видна только та часть, что под секцией ──
@@ -85,11 +89,20 @@
     pos.x += (tx - pos.x) * f;
     pos.y += (ty - pos.y) * f;
     const d = ptr.in ? Math.hypot(ptr.x - pos.x, ptr.y - pos.y) : Infinity;
-    // догнала — акцент; курсор снова оторвался — стекло (гистерезис, чтобы не мигало)
-    if (!caught && d < 10) { caught = true; btn.classList.add('is-caught'); }
-    else if (caught && d > 26) { caught = false; btn.classList.remove('is-caught'); }
+    // курсор внутри круга — акцент; вышел за край — обратно (гистерезис, чтобы не мигало)
+    if (!caught && d < R) { caught = true; spot(); btn.classList.add('is-caught'); }
+    else if (caught && d > R + 6) { caught = false; spot(); btn.classList.remove('is-caught'); }
     btn.style.transform = `translate3d(${pos.x.toFixed(2)}px,${pos.y.toFixed(2)}px,0)`;
     if (Math.hypot(tx - pos.x, ty - pos.y) > 0.15) raf = requestAnimationFrame(frame);
+  }
+
+  // точка, откуда растекается (и куда стекает) заливка: курсор, прижатый к краю круга
+  function spot() {
+    let dx = ptr.x - pos.x, dy = ptr.y - pos.y;
+    const k = Math.hypot(dx, dy) / R;
+    if (k > 1) { dx /= k; dy /= k; }
+    btn.style.setProperty('--x', (50 + dx / R * 50).toFixed(1) + '%');
+    btn.style.setProperty('--y', (50 + dy / R * 50).toFixed(1) + '%');
   }
 
   // ── полный просмотр ──
