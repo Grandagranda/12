@@ -112,10 +112,11 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 
 /* свет снизу — векторы 7–9 макета (#dd7a33, #b04a00, белый; размытие слоя 598), заранее отрисованы
    в img/st-glow-*.webp: холст x −700…2500, y −300…1450 px макета от верха блока. Привязан к низу
-   блока, чтобы на телефоне, где блок выше, свет оставался у нижнего края.
+   блока, чтобы на телефоне, где блок выше, свет оставался у нижнего края; --drop опускает свет
+   ниже макетной точки, чтобы он захватывал в основном последний пункт.
    Переливаются как пятна первого экрана: каждая полоса ходит по кругу, покачивается и «дышит»,
    периоды взаимно простые — картина не повторяется. Анимируется только transform */
-.st-glow{position:absolute;left:50%;bottom:0;z-index:-1;width:180rem;height:117rem;margin-left:-90rem;
+.st-glow{position:absolute;left:50%;bottom:var(--drop);--drop:-22rem;z-index:-1;width:180rem;height:117rem;margin-left:-90rem;
   pointer-events:none;--slow:1}
 .st-b{position:absolute;left:-70rem;top:-30rem;width:320rem;height:175rem;will-change:transform;
   animation:st-orbit calc(var(--t) * var(--slow)) linear var(--dl) infinite var(--dir,normal)}
