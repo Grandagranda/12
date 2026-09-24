@@ -55,9 +55,14 @@ p{margin:0}
 .l-ext-r{left:1798px;width:1369px;height:943px;
   -webkit-mask-image:linear-gradient(270deg,#000 35%,transparent);mask-image:linear-gradient(270deg,#000 35%,transparent)}
 .l-ext img{object-fit:fill}
-/* фон_оборудование-removebg 1 — прибор справа, размытие 6.6 уже в картинке */
+/* фон_оборудование-removebg 1 — прибор справа, размытие 6.6 уже в картинке.
+   Как в макете, низ прибора (стол и ножки) плавно уходит в тень — краёв не видно;
+   правый край растворяется раньше, чтобы у кромки кадра не было засвета */
 .l-equip2{left:1305px;top:119.5px;width:495px;height:665px;
-  -webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+  -webkit-mask-image:linear-gradient(180deg,#000 58%,transparent 90%),linear-gradient(90deg,#000 78%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(180deg,#000 58%,transparent 90%),linear-gradient(90deg,#000 78%,transparent);
+  mask-composite:intersect}
 .l-equip2 img{object-fit:fill}
 /* фон оборудование 2 — тот же снимок, отражён, 74 %; всё уже запечено в картинке */
 .l-equip3{left:0;top:0;width:1178px;height:901px}
@@ -82,6 +87,9 @@ p{margin:0}
   /* фон не глушим — только замедляем вдвое */
   .l-flow{--slow:2}
 }
+/* за людьми фон чёрный, как в макете: гасим зелёный отлив размытого снимка между ними */
+.l-dark{left:480px;top:-120px;width:900px;height:960px;pointer-events:none;
+  background:radial-gradient(closest-side,#0a0a0a 45%,rgba(10,10,10,.75) 70%,rgba(10,10,10,0))}
 /* люди */
 .l-p74{left:743px;top:29px;width:774px;height:1136px}
 .l-p74 img{object-fit:fill}
@@ -289,11 +297,6 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
         <svg viewBox="0 0 1440 1440"><ellipse cx="720" cy="720" rx="460" ry="210" fill="#0a0a0a" opacity=".7" filter="url(#kblur)"/></svg></div>
       <div class="bl" style="left:1510px;top:410px;width:1280px;height:1280px;--r:220px;--t:29s;--dir:reverse;--sp:83s;--sdir:reverse;--b:13s;--dl:-7s">
         <svg viewBox="0 0 1280 1280"><ellipse cx="640" cy="640" rx="380" ry="190" fill="#0a0a0a" opacity=".6" filter="url(#kblur)"/></svg></div>
-      <!-- бирюза: глубокий холодный провал между людьми и справа сверху -->
-      <div class="bl" style="left:1060px;top:-260px;width:1560px;height:1560px;--r:300px;--t:37s;--dir:reverse;--sp:71s;--b:19s;--dl:-22s">
-        <svg viewBox="0 0 1560 1560"><ellipse cx="780" cy="780" rx="520" ry="170" transform="rotate(-12 780 780)" fill="#0b3a42" opacity=".6" filter="url(#kblur)"/></svg></div>
-      <div class="bl" style="left:780px;top:-80px;width:1300px;height:1300px;--r:230px;--t:43s;--sp:101s;--sdir:reverse;--b:15s;--dl:-31s">
-        <svg viewBox="0 0 1300 1300"><ellipse cx="650" cy="650" rx="360" ry="200" fill="#06302a" opacity=".55" filter="url(#kblur)"/></svg></div>
       <!-- янтарь слева -->
       <div class="bl" style="left:140px;top:100px;width:1240px;height:1240px;--r:240px;--t:31s;--sp:89s;--sdir:reverse;--b:11s;--dl:-4s">
         <svg viewBox="0 0 1240 1240"><ellipse cx="620" cy="620" rx="360" ry="150" fill="#2e2606" opacity=".7" filter="url(#kblur)"/></svg></div>
@@ -305,6 +308,7 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
       <div class="bl" style="left:1350px;top:420px;width:1200px;height:1200px;--r:340px;--t:19s;--dir:reverse;--sp:67s;--b:12s;--dl:-11s">
         <svg viewBox="0 0 1200 1200"><ellipse cx="600" cy="600" rx="340" ry="120" fill="#d98a3c" opacity=".3" filter="url(#kblur)"/></svg></div>
     </div>
+    <div class="l-dark"></div>
     <div class="l-equip2"><img src="img/removebg.webp" alt=""></div>
     <div class="l-p74"><img src="img/p74.webp" alt=""></div>
     <div class="l-p6cb"><img src="img/p6cb.webp" alt=""></div>
