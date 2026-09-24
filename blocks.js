@@ -114,7 +114,6 @@
   const life = $('.life'), lfGrid = $('.lf-grid'), lfDim = $('.lf-dim'), stGlow = $('.st-glow');
   const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   let lfW = 0, lfS0 = 1, lfY0 = 0, lfY1 = 0;
-  const strike = $('.strike');
   function lfLayout() {
     if (!life) return;
     // финал: сетка во всю ширину, но помещается между шапкой и низом окна (с полями по 16 px)
@@ -125,11 +124,7 @@
     // чтобы верхний ряд был за краем — первыми открываются фото слева, справа и снизу
     lfS0 = innerWidth / (lfW * 582 / 1800);
     lfY0 = lfW * 280 / 1800 * lfS0 / 2 - vh() / 2;
-    // сетка свёрстана в СТАРТОВОМ размере и только уменьшается: слой с will-change браузер
-    // рисует один раз в исходном размере, и при увеличении фото рассыпалось бы на пиксели
-    lfGrid.style.setProperty('--W', (lfW * lfS0).toFixed(1) + 'px');
-    // «Мы убрали всё…» прилипает низом к низу окна — на него наплывает центральное фото
-    if (strike) strike.style.top = Math.min(0, vh() - strike.offsetHeight) + 'px';
+    lfGrid.style.setProperty('--rad', (16 * lfW / 1800).toFixed(2) + 'px');
   }
 
   // ── бегущая строка: сама ползёт, скролл её подгоняет ──
@@ -197,14 +192,11 @@
       const e = clamp(1 - r.top / h, 0, 1);
       // липкая часть: сетка уменьшается от lfS0 до 1
       const t = clamp(-r.top / Math.max(1, r.height - h), 0, 1);
-      // на экране: от lfS0 (центральное фото во всю ширину) до 1; сама сетка в lfS0 раз крупнее
-      const k = ease(t), s = lfS0 + (1 - lfS0) * k, sc = s / lfS0;
-      lfGrid.style.setProperty('--s', sc.toFixed(5));
+      // ширина сетки: от lfS0 (центральное фото во всю ширину) до финальной
+      const k = ease(t), s = lfS0 + (1 - lfS0) * k;
+      lfGrid.style.setProperty('--W', (lfW * s).toFixed(1) + 'px');
       lfGrid.style.setProperty('--y', (lfY0 + (lfY1 - lfY0) * k).toFixed(1) + 'px');
-      lfGrid.style.setProperty('--rad', (16 * lfW / 1800 / sc).toFixed(2) + 'px');
-      lfDim.style.setProperty('--dim', (.6 * Math.pow(1 - e, 1.3)).toFixed(3));
-      // блок выше гаснет и отъезжает, как первый экран под «О проекте» (до 85 %)
-      if (strike) strike.style.setProperty('--sd', (e * .85).toFixed(3));
+      lfDim.style.setProperty('--dim', (.9 * Math.pow(1 - e, 1.3)).toFixed(3));
       if (stGlow) stGlow.style.opacity = (1 - clamp((e - .15) / .75, 0, 1)).toFixed(3);
     }
 
