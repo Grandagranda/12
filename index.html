@@ -202,11 +202,11 @@ p{margin:0}
 /* кнопка плеера (узел 6:189): полупрозрачный акцентный круг 109 px с белым треугольником.
    Стоит справа под надписью и тянется за курсором; как только курсор оказался внутри круга —
    акцент растекается из точки входа, треугольник уезжает вправо и прилетает новый слева,
-   от круга расходится волна. Курсор уходит из круга — заливка стекает в точку выхода */
+   от круга расходится волна; размер круга не меняется, чтобы он не дёргался. Курсор уходит из круга — заливка стекает в точку выхода */
 .reel-play{position:absolute;left:0;top:0;width:10.9rem;height:10.9rem;margin:-5.45rem 0 0 -5.45rem;border-radius:50%;
   display:flex;align-items:center;justify-content:center;isolation:isolate;
   background:rgba(208,161,97,.36);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
-  color:#fff;pointer-events:none;will-change:translate,scale;transition:scale .6s cubic-bezier(.2,.8,.2,1)}
+  color:#fff;pointer-events:none;will-change:translate}
 .reel-play::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:50%;background:#d0a161;
   clip-path:circle(0 at var(--x,50%) var(--y,50%));transition:clip-path .65s cubic-bezier(.7,0,.2,1)}
 .reel-play::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid #d0a161;opacity:0}
@@ -214,7 +214,6 @@ p{margin:0}
 .reel-play-ic svg{position:absolute;inset:0;width:100%;height:100%;fill:currentColor;
   transition:transform .55s cubic-bezier(.7,0,.2,1) .05s,fill .4s ease}
 .reel-play-ic svg+svg{transform:translateX(-180%)}
-.reel-play.is-caught{scale:1.08}
 .reel-play.is-caught::before{clip-path:circle(105% at var(--x,50%) var(--y,50%))}
 .reel-play.is-caught::after{animation:reel-wave .9s cubic-bezier(.2,.8,.2,1)}
 .reel-play.is-caught .reel-play-ic svg{transform:translateX(180%);fill:#0a0a0a}

@@ -23,7 +23,8 @@
   let box = { l: 0, t: 0, r: 0, b: 0 };   // видимая часть ролика (окно секции) в px окна
   const ptr = { x: 0, y: 0, in: false, seen: false };
   let home = { x: 0, y: 0 }, pos = null, R = 55;
-  let raf = 0, last = 0, caught = false;
+  let raf = 0, last = 0, caught = false, caughtAt = 0;
+  const RELEASE = 1.6, HOLD = 450;   // отпускаем на 1.6 радиуса от центра и не раньше чем через 450 мс
 
   // дом кнопки — под надписью, правее центра: в макете круг 109 px стоит в 1.7rem под текстом,
   // его центр на 25.35rem правее середины кадра; на узком экране — просто по центру
@@ -92,9 +93,11 @@
     pos.x += (tx - pos.x) * f;
     pos.y += (ty - pos.y) * f;
     const d = ptr.in ? Math.hypot(ptr.x - pos.x, ptr.y - pos.y) : Infinity;
-    // курсор внутри круга — акцент; вышел за край — обратно (гистерезис, чтобы не мигало)
-    if (!caught && d < R) { caught = true; spot(); btn.classList.add('is-caught'); }
-    else if (caught && d > R + 6) { caught = false; spot(); btn.classList.remove('is-caught'); }
+    // курсор внутри круга — акцент. Отпускаем, только когда курсор ушёл заметно дальше края
+    // и захват держится хотя бы HOLD мс: кнопка отстаёт от курсора, и без этого на краю круга
+    // заливка включалась и выключалась по нескольку раз — кнопка дёргалась
+    if (!caught && d < R) { caught = true; caughtAt = now; spot(); btn.classList.add('is-caught'); }
+    else if (caught && d > R * RELEASE && now - caughtAt > HOLD) { caught = false; spot(); btn.classList.remove('is-caught'); }
     // положение — через translate, а не transform: scale (при захвате) применяется до translate
     // и не растягивает координаты, иначе кнопку откидывало от курсора и она дёргалась
     btn.style.translate = `${pos.x.toFixed(2)}px ${pos.y.toFixed(2)}px`;
