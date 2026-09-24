@@ -44,9 +44,17 @@ p{margin:0}
 .l-base{left:-4000px;top:0;width:9800px;height:924px;background:#0a0a0a}
 /* фон оборудование 1 — кадр из Figma уже с размытием 42 и градиентом, обрезан по кадру 1800;
    правый край растворяем, чтобы на широких экранах не было ступеньки */
-.l-equip1{left:433px;top:0;width:1367px;height:943px;
-  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.l-equip1{left:433px;top:0;width:1367px;height:943px}
 .l-equip1 img{object-fit:fill}
+/* окно шире кадра (или кадр уменьшен по высоте) — по бокам оставались тёмные полосы.
+   Продолжаем размытые фоны за край кадра их зеркальными копиями: на стыке картинка
+   совпадает (копия заходит на 2 px внутрь, чтобы не было шва сглаживания), а дальний край (маска задана до отражения) копии мягко уходит в #0a0a0a */
+.l-ext{top:0;transform:scaleX(-1)}
+.l-ext-l{left:-1178px;width:1180px;height:901px;
+  -webkit-mask-image:linear-gradient(90deg,#000 35%,transparent);mask-image:linear-gradient(90deg,#000 35%,transparent)}
+.l-ext-r{left:1798px;width:1369px;height:943px;
+  -webkit-mask-image:linear-gradient(270deg,#000 35%,transparent);mask-image:linear-gradient(270deg,#000 35%,transparent)}
+.l-ext img{object-fit:fill}
 /* фон_оборудование-removebg 1 — прибор справа, размытие 6.6 уже в картинке */
 .l-equip2{left:1305px;top:119.5px;width:495px;height:665px;
   -webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
@@ -179,7 +187,11 @@ p{margin:0}
    clip-path обрезает и fixed-потомков, поэтому видео видно только в пределах секции */
 .reel{position:relative;z-index:1;height:100vh;background:#000;clip-path:inset(0)}
 .reel-card{position:fixed;inset:0;cursor:pointer}
-.reel-card video{display:block;width:100%;height:100%;object-fit:cover}
+.reel-card{overflow:hidden}
+/* фон — плеер Kinescope без звука; iframe 16:9 растягиваем «как cover» и отключаем мышь,
+   чтобы его панель не всплывала и клик доставался карточке */
+.reel-bg{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(100vh,56.25vw);
+  transform:translate(-50%,-50%);border:0;pointer-events:none}
 /* затемнение: в макете видео на 55 % над #0a0a0a; пока окно только приоткрылось —
    кадр почти чёрный и светлеет до макетных 45 % тени, когда ролик встал целиком */
 .reel-shade{position:absolute;inset:0;background:#0a0a0a;opacity:var(--shade,.45);pointer-events:none}
@@ -213,7 +225,8 @@ p{margin:0}
 /* полный просмотр со звуком */
 .reel-modal{position:fixed;inset:0;z-index:100;background:#000;display:none}
 .reel-modal.is-open{display:block}
-.reel-modal video{width:100%;height:100%;object-fit:contain;background:#000}
+.reel-full{position:absolute;inset:0}
+.reel-modal iframe{display:block;width:100%;height:100%;border:0;background:#000}
 .reel-close{position:absolute;top:24px;right:24px;width:52px;height:52px;border:0;border-radius:50%;
   background:rgba(255,255,255,.12);color:#fff;font:300 30px/1 "Inter Tight",sans-serif;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:background-color .25s}
@@ -268,6 +281,8 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
     <div class="l-base"></div>
     <div class="l-equip1"><img src="img/equip-a.webp" alt=""></div>
     <div class="l-equip3"><img src="img/equip-b.webp" alt=""></div>
+    <div class="l-ext l-ext-l"><img src="img/equip-b.webp" alt=""></div>
+    <div class="l-ext l-ext-r"><img src="img/equip-a.webp" alt=""></div>
     <div class="l-flow" aria-hidden="true">
       <svg width="0" height="0" style="position:absolute"><filter id="kblur" x="-300%" y="-300%" width="700%" height="700%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="80"/></filter></svg>
       <!-- тёмные пятна -->
@@ -393,8 +408,8 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
 <!-- ═════════ 3. Ролик: открывается из-под блока, затемнение уходит по скроллу ═════════ -->
 <section class="reel" id="about" aria-label="О школе КМК">
   <div class="reel-card" role="button" tabindex="0" aria-label="Смотреть видео со звуком">
-    <!-- в фоне — облегчённый фрагмент без звука; полный ролик грузится только по клику -->
-    <video src="video/about-loop.mp4" poster="video/about-poster.jpg" muted loop playsinline autoplay preload="auto"></video>
+    <!-- в фоне ролик с Kinescope без звука; плеер грузится, когда блок подъезжает к окну -->
+    <iframe class="reel-bg" data-kin="3ghpcBgKrTTJfXFk7nVMNA" title="Видео о школе КМК" tabindex="-1" allow="autoplay; encrypted-media"></iframe>
     <div class="reel-shade"></div>
     <div class="reel-copy">
       <p class="ab-ey"><i></i>о нас</p>
@@ -406,7 +421,7 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
 </section>
 
 <div class="reel-modal" role="dialog" aria-modal="true" aria-label="Видео о школе КМК">
-  <video src="video/about.mp4" poster="video/about-poster.jpg" controls playsinline preload="none"></video>
+  <div class="reel-full"></div>
   <button class="reel-close" type="button" aria-label="Закрыть">×</button>
 </div>
 

@@ -3,17 +3,18 @@
 // Кнопка плеера стоит под надписью справа (как в макете) и тянется за курсором (как на первом
 // экране Peroni): курсор остаётся обычным, кнопка заметно отстаёт. Как только курсор оказался
 // внутри круга — акцент растекается из точки входа; вышел за круг — стекает в точку выхода.
-// Пока в кадре — играет без звука; клик открывает полный просмотр со звуком.
+// Фон — ролик с Kinescope без звука; клик открывает полный просмотр со звуком в плеере Kinescope.
 (function () {
   const root = document.documentElement;
   const reel = document.querySelector('.reel');
   const card = reel.querySelector('.reel-card');
-  const bg = card.querySelector('video');
+  const bg = card.querySelector('.reel-bg');
   const head = card.querySelector('.reel-h');
   const copy = card.querySelector('.reel-copy');
   const btn = card.querySelector('.reel-play');
   const modal = document.querySelector('.reel-modal');
-  const full = modal.querySelector('video');
+  const full = modal.querySelector('.reel-full');
+  const KIN = 'https://kinescope.io/embed/' + bg.dataset.kin;
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 
   // темп догона: 1 − e^(−K·dt) за кадр; K = 1.7 — это 2.8 % пути за кадр на 60 Гц, как у Peroni
@@ -57,11 +58,13 @@
   measureHome();
   layout();
 
-  // ── фон играет только когда виден ──
-  new IntersectionObserver(([e]) => {
-    if (e.isIntersecting && !modal.classList.contains('is-open')) bg.play().catch(() => {});
-    else bg.pause();
-  }, { threshold: 0 }).observe(reel);
+  // ── фон (плеер Kinescope) подгружаем, когда блок в экране от окна ──
+  const io = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    bg.src = KIN + '?autoplay=1&muted=1&loop=1&playsinline=1&controls=0&autopause=0';
+    io.disconnect();
+  }, { rootMargin: '100% 0px' });
+  io.observe(reel);
 
   // ── кнопка за курсором ──
   function testHover() {
@@ -107,22 +110,18 @@
 
   // ── полный просмотр ──
   function open() {
-    bg.pause();
     modal.classList.add('is-open');
     root.classList.add('is-locked');
     testHover();
-    full.currentTime = 0;
-    full.muted = false;
-    full.play().catch(() => {});
+    full.innerHTML = `<iframe src="${KIN}?autoplay=1" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
     if (modal.requestFullscreen) modal.requestFullscreen().catch(() => {});
   }
   function close() {
     if (!modal.classList.contains('is-open')) return;
-    full.pause();
+    full.innerHTML = '';
     modal.classList.remove('is-open');
     root.classList.remove('is-locked');
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    bg.play().catch(() => {});
     testHover();
   }
   card.addEventListener('click', open);
@@ -131,7 +130,6 @@
   addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   // вышли из полноэкранного режима браузера (Esc) — закрываем и окно
   document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) close(); });
-  full.addEventListener('ended', close);
 
   window.__reel = { layout, box: () => box, pos: () => pos, ptr, frame, home: () => home };   // для проверки
 })();
