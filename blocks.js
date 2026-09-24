@@ -10,7 +10,7 @@
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
   const vh = () => innerHeight;
 
-  // ── заголовки: слова поднимаются из-под маски ──
+  // ── заголовки: делим на слова; проявляются из размытия по мере прокрутки (как текст «О проекте») ──
   $$('[data-split]').forEach(el => {
     let i = 0;
     const walk = node => {
@@ -66,44 +66,60 @@
     io.unobserve(e.target);
     if (e.target._onIn) e.target._onIn();
   }), { rootMargin: '0px 0px -12% 0px' });
-  // надпись на ролике прибита к окну — её включает reel.js, когда окно открылось
-  $$('[data-split]:not(.reel-h),[data-reveal],.cal,.reviews,.apply').forEach(el => io.observe(el));
+  $$('[data-reveal],.cal,.reviews,.apply').forEach(el => io.observe(el));
 
   // зачёркивания идут прямо за прокруткой, без таймеров: у каждой строки свой отрезок пути --p 0→1 —
   // линия начинает тянуться, когда верх строки поднялся до 68 % высоты окна, и дочерчена к 38 %.
   // Строки стоят друг под другом, поэтому и зачёркиваются по очереди; скролл назад — стирается
-  // Описание «Вместо этого» проявляется по словам из размытия, как текст «О проекте»: слово i —
-  // на своём отрезке длиной SPAN слов во второй половине пути строки, соседние перекрываются
+  // «Вместо этого» и описание выпадают по словам сверху вниз из-под маски (как заголовки раньше
+  // поднимались снизу) — когда строка зачёркнута на треть; скролл назад убирает их обратно
   const stRows = $$('.st-row');
   stRows.forEach(row => {
     const yes = $('.st-yes', row);
     if (!yes) return;
+    let i = 0;
     [...yes.querySelectorAll('*'), yes].forEach(el => [...el.childNodes].forEach(n => {
       if (n.nodeType !== 3 || !n.textContent.trim()) return;
       const frag = document.createDocumentFragment();
       n.textContent.split(/([ \t\n\r]+)/).forEach(part => {
         if (!part) return;
-        if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-        const s = document.createElement('span'); s.className = 'bw'; s.textContent = part;
-        frag.appendChild(s);
+        if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+        const w = document.createElement('span'); w.className = 'w';
+        const s = document.createElement('span'); s.textContent = part; s.style.setProperty('--i', i++);
+        w.appendChild(s); frag.appendChild(w);
       });
       n.replaceWith(frag);
     }));
-    row._words = $$('.bw', yes);
   });
   function stScrub(h) {
-    const SPAN = 5;
     for (const row of stRows) {
       const p = +(reduced ? 1 : clamp((h * .68 - row.getBoundingClientRect().top) / (h * .3), 0, 1)).toFixed(3);
       if (row._p === p) continue;
       row._p = p; row.style.setProperty('--p', p);
-      const w = row._words || [], N = w.length, q = clamp((p - .3) / .7, 0, 1);
+      row.classList.toggle('is-yes', p > .3);
+    }
+  }
+
+  // заголовки: слово i проявляется на своём отрезке длиной SPAN слов, как «О проекте». Отрезок
+  // заголовка — пока его верх поднимается с 92 % до 50 % высоты окна; надпись на ролике прибита
+  // к окну, её ведёт то, насколько открылось окно ролика
+  const heads = $$('[data-split]').map(el => ({ el, words: $$('.w', el), host: el.closest('.reel') }));
+  function headScrub(h) {
+    const SPAN = 4;
+    for (const hd of heads) {
+      const r = (hd.host || hd.el).getBoundingClientRect();
+      let p = hd.host ? clamp(((1 - r.top / h) - .3) / .5, 0, 1) : clamp((h * .92 - r.top) / (h * .42), 0, 1);
+      if (reduced) p = 1;
+      if (hd._p === p) continue;
+      hd._p = p;
+      const N = hd.words.length;
       for (let i = 0; i < N; i++) {
-        const t = +clamp((q * (N + SPAN) - i) / SPAN, 0, 1).toFixed(3);
-        if (w[i]._t !== t) { w[i]._t = t; w[i].style.setProperty('--t', t); }
+        const t = +clamp((p * (N + SPAN) - i) / SPAN, 0, 1).toFixed(3);
+        if (hd.words[i]._t !== t) { hd.words[i]._t = t; hd.words[i].style.setProperty('--t', t); }
       }
     }
   }
+
 
   // свет в «Чего у нас нет» переливается, только пока блок на экране
   const ioLive = new IntersectionObserver(es => es.forEach(e =>
@@ -232,6 +248,7 @@
     }
 
     stScrub(h);
+    headScrub(h);
 
     mqV += (y - lastY) * .12;
     lastY = y;
