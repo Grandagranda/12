@@ -69,11 +69,20 @@
   // надпись на ролике прибита к окну — её включает reel.js, когда окно открылось
   $$('[data-split]:not(.reel-h),[data-reveal],.cal,.reviews,.apply').forEach(el => io.observe(el));
 
-  // зачёркивания — строка должна дойти до середины экрана
-  const ioMid = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('is-in'); ioMid.unobserve(e.target); }
-  }), { rootMargin: '0px 0px -38% 0px' });
-  $$('.st-row').forEach(el => ioMid.observe(el));
+  // зачёркивания — по очереди: строка зачёркивается, когда её верх поднялся до 55 % высоты окна,
+  // и не раньше чем через STEP мс после предыдущей — даже если в окно попало сразу несколько строк
+  // (высокий экран, быстрый скролл), они зачёркиваются одна за другой, а не все разом
+  const stRows = $$('.st-row'), STEP = 450;
+  let stDone = 0, stTimer = 0;
+  function stTick() {
+    stTimer = 0;
+    if (stDone >= stRows.length) return;
+    if (stRows[stDone].getBoundingClientRect().top < vh() * .55) {
+      stRows[stDone++].classList.add('is-in');
+      stTimer = setTimeout(stTick, reduced ? 0 : STEP);
+    }
+  }
+  const stCheck = () => { if (!stTimer) stTick(); };
 
   // свет в «Чего у нас нет» переливается, только пока блок на экране
   const ioLive = new IntersectionObserver(es => es.forEach(e =>
@@ -112,7 +121,8 @@
 
   // ── фото интенсивов: из темноты во всю ширину → сетка 3×3 уменьшается к центру ──
   const life = $('.life'), lfGrid = $('.lf-grid'), lfDim = $('.lf-dim'), stGlow = $('.st-glow');
-  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  // мягкое ускорение и торможение без рывка посередине (пик скорости ×1.57, у кубической было ×3)
+  const ease = t => (1 - Math.cos(Math.PI * t)) / 2;
   let lfW = 0, lfS0 = 1, lfY0 = 0, lfY1 = 0;
   function lfLayout() {
     if (!life) return;
@@ -199,6 +209,8 @@
       lfDim.style.setProperty('--dim', (.9 * Math.pow(1 - e, 1.3)).toFixed(3));
       if (stGlow) stGlow.style.opacity = (1 - clamp((e - .15) / .75, 0, 1)).toFixed(3);
     }
+
+    stCheck();
 
     mqV += (y - lastY) * .12;
     lastY = y;
