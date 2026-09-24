@@ -110,6 +110,23 @@
     hs.style.height = (vh() + hsDist) + 'px';
   }
 
+  // ── фото интенсивов: из темноты во всю ширину → сетка 3×3 уменьшается к центру ──
+  const life = $('.life'), lfGrid = $('.lf-grid'), lfDim = $('.lf-dim'), stGlow = $('.st-glow');
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  let lfW = 0, lfS0 = 1, lfY0 = 0, lfY1 = 0;
+  function lfLayout() {
+    if (!life) return;
+    // финал: сетка во всю ширину, но помещается между шапкой и низом окна (с полями по 16 px)
+    const barH = bar ? bar.offsetHeight : 0;
+    lfW = Math.min(innerWidth, (vh() - barH - 32) * 1800 / 866);
+    lfY1 = barH / 2;
+    // старт: центральное фото (582 из 1800) растянуто на всю ширину окна и прижато к верху,
+    // чтобы верхний ряд был за краем — первыми открываются фото слева, справа и снизу
+    lfS0 = innerWidth / (lfW * 582 / 1800);
+    lfY0 = lfW * 280 / 1800 * lfS0 / 2 - vh() / 2;
+    lfGrid.style.setProperty('--W', lfW.toFixed(1) + 'px');
+  }
+
   // ── бегущая строка: сама ползёт, скролл её подгоняет ──
   const mqIn = $('.mq-in'), mqRow = $('.mq-row');
   if (mqIn) mqRow.appendChild(mqIn.cloneNode(true)).setAttribute('aria-hidden', 'true');
@@ -168,6 +185,21 @@
       });
     }
 
+    // фото интенсивов
+    if (life) {
+      const r = life.getBoundingClientRect();
+      // вход: верх секции идёт от низа окна к верху — фото проступает, свет выше гаснет
+      const e = clamp(1 - r.top / h, 0, 1);
+      // липкая часть: сетка уменьшается от lfS0 до 1
+      const t = clamp(-r.top / Math.max(1, r.height - h), 0, 1);
+      const k = ease(t), s = lfS0 + (1 - lfS0) * k;
+      lfGrid.style.setProperty('--s', s.toFixed(4));
+      lfGrid.style.setProperty('--y', (lfY0 + (lfY1 - lfY0) * k).toFixed(1) + 'px');
+      lfGrid.style.setProperty('--rad', (16 * lfW / 1800 / s).toFixed(2) + 'px');
+      lfDim.style.setProperty('--dim', (.9 * Math.pow(1 - e, 1.3)).toFixed(3));
+      if (stGlow) stGlow.style.opacity = (1 - clamp((e - .15) / .75, 0, 1)).toFixed(3);
+    }
+
     mqV += (y - lastY) * .12;
     lastY = y;
   }
@@ -190,9 +222,9 @@
   let sq = 0;
   addEventListener('scroll', () => { if (!sq) sq = requestAnimationFrame(() => { sq = 0; update(); }); }, { passive: true });
   if (window.kmkScroll && window.kmkScroll.active) window.kmkScroll.onFrame(update);
-  addEventListener('resize', () => { hsLayout(); mqW = 0; update(); });
-  addEventListener('load', () => { hsLayout(); update(); });
-  hsLayout(); update();
+  addEventListener('resize', () => { hsLayout(); lfLayout(); mqW = 0; update(); });
+  addEventListener('load', () => { hsLayout(); lfLayout(); update(); });
+  hsLayout(); lfLayout(); update();
 
   // ── интенсивы: аккордеон, подсветка дней, превью за курсором ──
   const cal = $('.cal'), rows = $$('.in-row'), peek = $('.in-peek'), peekImg = peek && $('img', peek);

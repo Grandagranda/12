@@ -139,6 +139,19 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 .strike:not(.is-live) .st-b,.strike:not(.is-live) .st-b img{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.st-glow{--slow:2}}
 
+/* ═════════ 2б. Фото интенсивов ═════════ */
+/* Сетка из макета: 1800×866 (ячейки 583/582×280, шаг 13, углы 16). Сцена прилипает к окну на всю
+   высоту секции; blocks.js задаёт ширину сетки --W (сетка целиком помещается в окно), масштаб --s
+   (от «центральное фото во всю ширину» до 1), скругление --rad (постоянное на экране, несмотря на
+   масштаб) и затемнение --dim (фото поднимается из темноты) */
+.life{position:relative;height:250vh;background:var(--bg)}
+.lf-stage{position:sticky;top:0;height:100vh;overflow:hidden}
+.lf-grid{position:absolute;left:50%;top:50%;width:var(--W,100vw);aspect-ratio:1800/866;
+  translate:-50% calc(-50% + var(--y,0px));transform:scale(var(--s,1));will-change:transform}
+.lf-c{position:absolute;height:32.3326%;margin:0;overflow:hidden;border-radius:var(--rad,16px);background:#161616}
+.lf-c img{display:block;width:100%;height:100%;object-fit:cover}
+.lf-dim{position:absolute;inset:0;background:var(--bg);opacity:var(--dim,0);pointer-events:none}
+
 /* ═════════ 3. Горизонтальная лента ═════════ */
 .hs{position:relative;margin-top:18rem;background:var(--bg)}
 .hs-pin{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
