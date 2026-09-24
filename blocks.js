@@ -69,20 +69,16 @@
   // надпись на ролике прибита к окну — её включает reel.js, когда окно открылось
   $$('[data-split]:not(.reel-h),[data-reveal],.cal,.reviews,.apply').forEach(el => io.observe(el));
 
-  // зачёркивания — по очереди: строка зачёркивается, когда её верх поднялся до 55 % высоты окна,
-  // и не раньше чем через STEP мс после предыдущей — даже если в окно попало сразу несколько строк
-  // (высокий экран, быстрый скролл), они зачёркиваются одна за другой, а не все разом
-  const stRows = $$('.st-row'), STEP = 450;
-  let stDone = 0, stTimer = 0;
-  function stTick() {
-    stTimer = 0;
-    if (stDone >= stRows.length) return;
-    if (stRows[stDone].getBoundingClientRect().top < vh() * .55) {
-      stRows[stDone++].classList.add('is-in');
-      stTimer = setTimeout(stTick, reduced ? 0 : STEP);
+  // зачёркивания идут прямо за прокруткой, без таймеров: у каждой строки свой отрезок пути --p 0→1 —
+  // линия начинает тянуться, когда верх строки поднялся до 85 % высоты окна, и дочерчена к 55 %.
+  // Строки стоят друг под другом, поэтому и зачёркиваются по очереди; скролл назад — стирается
+  const stRows = $$('.st-row');
+  function stScrub(h) {
+    for (const row of stRows) {
+      const p = +(reduced ? 1 : clamp((h * .85 - row.getBoundingClientRect().top) / (h * .3), 0, 1)).toFixed(3);
+      if (row._p !== p) { row._p = p; row.style.setProperty('--p', p); }
     }
   }
-  const stCheck = () => { if (!stTimer) stTick(); };
 
   // свет в «Чего у нас нет» переливается, только пока блок на экране
   const ioLive = new IntersectionObserver(es => es.forEach(e =>
@@ -210,7 +206,7 @@
       if (stGlow) stGlow.style.opacity = (1 - clamp((e - .15) / .75, 0, 1)).toFixed(3);
     }
 
-    stCheck();
+    stScrub(h);
 
     mqV += (y - lastY) * .12;
     lastY = y;
