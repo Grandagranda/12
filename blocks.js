@@ -70,12 +70,12 @@
   $$('[data-split]:not(.reel-h),[data-reveal],.cal,.reviews,.apply').forEach(el => io.observe(el));
 
   // зачёркивания идут прямо за прокруткой, без таймеров: у каждой строки свой отрезок пути --p 0→1 —
-  // линия начинает тянуться, когда верх строки поднялся до 85 % высоты окна, и дочерчена к 55 %.
+  // линия начинает тянуться, когда верх строки поднялся до 68 % высоты окна, и дочерчена к 38 %.
   // Строки стоят друг под другом, поэтому и зачёркиваются по очереди; скролл назад — стирается
   const stRows = $$('.st-row');
   function stScrub(h) {
     for (const row of stRows) {
-      const p = +(reduced ? 1 : clamp((h * .85 - row.getBoundingClientRect().top) / (h * .3), 0, 1)).toFixed(3);
+      const p = +(reduced ? 1 : clamp((h * .68 - row.getBoundingClientRect().top) / (h * .3), 0, 1)).toFixed(3);
       if (row._p !== p) { row._p = p; row.style.setProperty('--p', p); }
     }
   }
