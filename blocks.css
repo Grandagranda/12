@@ -101,10 +101,12 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
    тянется слева направо по каждой строке пункта; пункт уходит в тень вместе с ней */
 .st-no span{background:linear-gradient(var(--acc),var(--acc)) 0 60%/calc(var(--p,0) * 100%) max(2px,.2rem) no-repeat;
   -webkit-box-decoration-break:clone;box-decoration-break:clone}
-/* описание проявляется во второй половине отрезка и чуть подъезжает слева */
-.st-yes{--q:clamp(0,(var(--p,0) - .35) / .65,1);
-  max-width:45.7rem;margin:0;padding-top:.7rem;font:400 max(13px,1.5rem)/1.35 "Inter Tight",sans-serif;
-  color:rgba(255,255,255,.87);opacity:var(--q);transform:translateX(calc((1 - var(--q)) * 3rem))}
+/* описание проявляется по словам из размытия вслед за зачёркиванием (как текст «О проекте»):
+   у каждого слова свой --t 0→1 (blocks.js) */
+.st-yes{max-width:45.7rem;margin:0;padding-top:.7rem;font:400 max(13px,1.5rem)/1.35 "Inter Tight",sans-serif;
+  color:rgba(255,255,255,.87)}
+.st-yes .bw{filter:blur(calc((1 - var(--t,0)) * 10px));opacity:calc(var(--t,0) * 1)}
+@media (prefers-reduced-motion:reduce){.st-yes .bw{filter:none;opacity:1}}
 .st-yes small{display:block;margin-bottom:1.2rem;font:600 max(10px,1.2rem)/1.35 "Inter Tight",sans-serif;
   text-transform:uppercase;color:var(--acc)}
 

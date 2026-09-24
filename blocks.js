@@ -72,11 +72,36 @@
   // зачёркивания идут прямо за прокруткой, без таймеров: у каждой строки свой отрезок пути --p 0→1 —
   // линия начинает тянуться, когда верх строки поднялся до 68 % высоты окна, и дочерчена к 38 %.
   // Строки стоят друг под другом, поэтому и зачёркиваются по очереди; скролл назад — стирается
+  // Описание «Вместо этого» проявляется по словам из размытия, как текст «О проекте»: слово i —
+  // на своём отрезке длиной SPAN слов во второй половине пути строки, соседние перекрываются
   const stRows = $$('.st-row');
+  stRows.forEach(row => {
+    const yes = $('.st-yes', row);
+    if (!yes) return;
+    [...yes.querySelectorAll('*'), yes].forEach(el => [...el.childNodes].forEach(n => {
+      if (n.nodeType !== 3 || !n.textContent.trim()) return;
+      const frag = document.createDocumentFragment();
+      n.textContent.split(/([ \t\n\r]+)/).forEach(part => {
+        if (!part) return;
+        if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+        const s = document.createElement('span'); s.className = 'bw'; s.textContent = part;
+        frag.appendChild(s);
+      });
+      n.replaceWith(frag);
+    }));
+    row._words = $$('.bw', yes);
+  });
   function stScrub(h) {
+    const SPAN = 5;
     for (const row of stRows) {
       const p = +(reduced ? 1 : clamp((h * .68 - row.getBoundingClientRect().top) / (h * .3), 0, 1)).toFixed(3);
-      if (row._p !== p) { row._p = p; row.style.setProperty('--p', p); }
+      if (row._p === p) continue;
+      row._p = p; row.style.setProperty('--p', p);
+      const w = row._words || [], N = w.length, q = clamp((p - .3) / .7, 0, 1);
+      for (let i = 0; i < N; i++) {
+        const t = +clamp((q * (N + SPAN) - i) / SPAN, 0, 1).toFixed(3);
+        if (w[i]._t !== t) { w[i]._t = t; w[i].style.setProperty('--t', t); }
+      }
     }
   }
 
