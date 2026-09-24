@@ -95,7 +95,9 @@
     // курсор внутри круга — акцент; вышел за край — обратно (гистерезис, чтобы не мигало)
     if (!caught && d < R) { caught = true; spot(); btn.classList.add('is-caught'); }
     else if (caught && d > R + 6) { caught = false; spot(); btn.classList.remove('is-caught'); }
-    btn.style.transform = `translate3d(${pos.x.toFixed(2)}px,${pos.y.toFixed(2)}px,0)`;
+    // положение — через translate, а не transform: scale (при захвате) применяется до translate
+    // и не растягивает координаты, иначе кнопку откидывало от курсора и она дёргалась
+    btn.style.translate = `${pos.x.toFixed(2)}px ${pos.y.toFixed(2)}px`;
     if (Math.hypot(tx - pos.x, ty - pos.y) > 0.15) raf = requestAnimationFrame(frame);
   }
 
