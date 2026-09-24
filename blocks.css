@@ -78,7 +78,7 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 .bar.is-on{transform:none}
 .bar-in{display:flex;align-items:center;justify-content:space-between;height:64px}
 .bar-brand{display:flex;align-items:center;gap:12px}
-.bar-brand img{width:28px;height:29px;transform:scaleY(-1)}
+.bar-brand img{width:28px;height:29px}
 .bar-brand span{font:600 18px/1 "Inter Tight",sans-serif;letter-spacing:.11em;color:var(--acc)}
 .bar-nav,.ft-nav{display:flex;gap:max(28px,5rem);font-size:14px;line-height:1.35}
 .bar-nav a,.ft-nav a{opacity:.6;transition:opacity .45s ease}

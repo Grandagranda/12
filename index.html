@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>
+  // картинка не загрузилась — прячем, чтобы браузер не рисовал рамку битого изображения
+  addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true);
+</script>
+<script>
   // кадр 1800×1044 (первый экран) вписываем в окно целиком: и по ширине, и по высоте
   (function(){var r=document.documentElement;
     function fit(){r.style.setProperty("--k",Math.min(r.clientWidth/1800,innerHeight/1044))}
@@ -87,9 +91,11 @@ p{margin:0}
 /* тени по горизонтали однородные — тянем на всю ширину окна */
 .l-sh1{left:-4000px;top:447px;width:9800px;height:459px}
 .l-sh2{left:-4000px;top:602px;width:9800px;height:264px}
+/* градиент из макета: прозрачный сверху → #0a0a0a к 80 % высоты */
+.l-sh1,.l-sh2{background:linear-gradient(180deg,rgba(10,10,10,0) 0%,#0a0a0a 80%)}
 
 /* шапка */
-.logo{left:226px;top:20px;width:36px;height:37px;transform:scaleY(-1)}
+.logo{left:226px;top:20px;width:36px;height:37px}
 .brand{left:275px;top:26px;font-weight:600;font-size:22px;line-height:normal;
        letter-spacing:2.42px;color:#d0a161;white-space:nowrap}
 .nav{left:50%;top:28px;transform:translateX(-50%);display:flex;align-items:center;gap:63px;
@@ -294,8 +300,8 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
     <div class="l-equip2"><img src="img/removebg.webp" alt=""></div>
     <div class="l-p74"><img src="img/p74.webp" alt=""></div>
     <div class="l-p6cb"><img src="img/p6cb.webp" alt=""></div>
-    <div class="l-sh1"><img src="img/shadow1.png" alt=""></div>
-    <div class="l-sh2"><img src="img/shadow2.png" alt=""></div>
+    <div class="l-sh1"></div>
+    <div class="l-sh2"></div>
   </div>
 
   <img class="abs logo" src="img/logo.svg" alt="">
