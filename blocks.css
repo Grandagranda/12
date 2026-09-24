@@ -88,7 +88,11 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 /* ═════════ 2. Чего у нас нет ═════════ */
 /* Узлы 17:285–17:342, координаты от верха блока (y 2204 в кадре), колонка 1200 (как «О проекте»).
    Строка — 127 px с линией сверху: номер и пункт на +26, «Вместо этого» на +33, описание на +61 */
-.strike{padding:13.8rem 0 21.2rem;overflow:hidden;isolation:isolate}
+.strike{position:sticky;z-index:1;padding:13.8rem 0 21.2rem;overflow:hidden;isolation:isolate;background:var(--bg)}
+/* на блок наплывает центральное фото следующей секции: он прилипает низом к низу окна (top задаёт
+   blocks.js), гаснет до 85 % и чуть отъезжает, текст уплывает вверх — как первый экран под «О проекте» */
+.strike::after{content:"";position:absolute;inset:0;z-index:2;background:var(--bg);opacity:var(--sd,0);pointer-events:none}
+.st-frame{translate:0 calc(var(--sd,0) * -140px);scale:calc(1 - var(--sd,0) * .04);transform-origin:50% 100%}
 .st-frame{position:relative;width:min(120rem,calc(100% - 32px));margin:0 auto}
 .st-h{margin:1.4rem 0 0;font:500 4.5rem/1.06 "Inter Tight",sans-serif;letter-spacing:-.09rem;color:#fff}
 .st-list{list-style:none;margin:6rem 0 0;padding:0}
@@ -144,7 +148,7 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
    высоту секции; blocks.js задаёт ширину сетки --W (сетка целиком помещается в окно), масштаб --s
    (от «центральное фото во всю ширину» до 1), скругление --rad (постоянное на экране, несмотря на
    масштаб) и затемнение --dim (фото поднимается из темноты) */
-.life{position:relative;height:250vh;background:var(--bg)}
+.life{position:relative;z-index:2;height:250vh;background:var(--bg)}
 .lf-stage{position:sticky;top:0;height:100vh;overflow:hidden}
 .lf-grid{position:absolute;left:50%;top:50%;width:var(--W,100vw);aspect-ratio:1800/866;
   translate:-50% calc(-50% + var(--y,0px));transform:scale(var(--s,1));will-change:transform}
