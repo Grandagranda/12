@@ -42,25 +42,18 @@ p{margin:0}
 .hero-bg>*{position:absolute}
 .hero-bg img{display:block;width:100%;height:100%;max-width:none}
 .l-base{left:-4000px;top:0;width:9800px;height:924px;background:#0a0a0a}
-/* фон оборудование 1 */
-.l-equip1{left:433px;top:-167px;width:1989px;height:1110px;filter:blur(21px);
-  /* сдвиг вправо: силуэт прибора из этого снимка (в Figma он за краем кадра)
-     уходит за экран и на широких мониторах */
-  transform:translateX(360px)}
-.l-equip1 img{object-fit:cover}
-.l-equip1::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(166.81703448150364deg,#0a0a0a 26.946%,rgba(10,10,10,0) 34.376%)}
-/* фон_оборудование-removebg 1 */
-.l-equip2{left:1299px;top:59px;width:538px;height:718px;overflow:hidden;filter:blur(3.3px);
-  /* прибор на заднем плане: уменьшен под масштаб людей, стоит на том же уровне пола */
-  transform:translateX(40px) scale(.84);transform-origin:50% 100%}
-/* картинка уже обрезана до видимой части узла; правый край растворён в самом файле */
+/* фон оборудование 1 — кадр из Figma уже с размытием 42 и градиентом, обрезан по кадру 1800;
+   правый край растворяем, чтобы на широких экранах не было ступеньки */
+.l-equip1{left:433px;top:0;width:1367px;height:943px;
+  -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.l-equip1 img{object-fit:fill}
+/* фон_оборудование-removebg 1 — прибор справа, размытие 6.6 уже в картинке */
+.l-equip2{left:1305px;top:119.5px;width:495px;height:665px;
+  -webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
 .l-equip2 img{object-fit:fill}
-/* фон оборудование 2 — тот же кадр в тёплой гамме, отражён по горизонтали, 74 % */
-.l-equip3{left:-811px;top:-209px;width:1989px;height:1110px;transform:scaleX(-1);filter:blur(21px);opacity:.74}
-.l-equip3 img{object-fit:cover}
-.l-equip3::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(166.81703448150364deg,#0a0a0a 26.946%,rgba(10,10,10,0) 34.376%)}
+/* фон оборудование 2 — тот же снимок, отражён, 74 %; всё уже запечено в картинке */
+.l-equip3{left:0;top:0;width:1178px;height:901px}
+.l-equip3 img{object-fit:fill}
 /* «живой» фон: пятна в цветах макета (оранжевые, янтарные, бирюзовые и чёрные) над размытыми снимками,
    под прибором и людьми. Каждое пятно само по себе: ходит по кругу (без разворота
    назад), медленно поворачивается и «дышит»; периоды взаимно простые, поэтому общая
@@ -83,8 +76,9 @@ p{margin:0}
 }
 /* люди */
 .l-p74{left:743px;top:29px;width:774px;height:1136px}
-.l-p74 img{object-fit:cover}
-.l-p6cb{left:373px;top:-11px;width:647px;height:761px}
+.l-p74 img{object-fit:fill}
+/* узел начинается на y=−11, верх срезан маской кадра — в картинке видимая часть 647×750 */
+.l-p6cb{left:373px;top:0;width:647px;height:750px}
 /* кадр из оригинала 3494×2953 уже вырезан под узел 647×761 */
 .l-p6cb img{object-fit:fill}
 /* тени внизу */
