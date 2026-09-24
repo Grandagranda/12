@@ -75,6 +75,11 @@
   }), { rootMargin: '0px 0px -38% 0px' });
   $$('.st-row').forEach(el => ioMid.observe(el));
 
+  // свет в «Чего у нас нет» переливается, только пока блок на экране
+  const ioLive = new IntersectionObserver(es => es.forEach(e =>
+    e.target.classList.toggle('is-live', e.isIntersecting)));
+  $$('.strike').forEach(el => ioLive.observe(el));
+
   // ── счётчики ──
   $$('[data-count]').forEach(el => {
     const to = +el.dataset.count;
