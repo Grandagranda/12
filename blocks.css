@@ -35,11 +35,9 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 .h2-s{font-size:5.6rem;line-height:.96}
 .h2 em{font-style:normal}
 
-/* заголовки поднимаются по словам из-под маски */
-[data-split] .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.12em;margin-bottom:-.12em}
-[data-split] .w>span{display:inline-block;transform:translateY(110%);
-  transition:transform 1.1s var(--out) calc(var(--i) * 45ms)}
-[data-split].is-in .w>span{transform:none}
+/* заголовки проявляются по словам из размытия по мере прокрутки, как текст «О проекте»:
+   у каждого слова свой --t 0→1 (blocks.js) */
+[data-split] .w{display:inline-block;filter:blur(calc((1 - var(--t,0)) * 10px));opacity:calc(.12 + var(--t,0) * .88)}
 
 [data-reveal]{opacity:0;transform:translateY(3rem);
   transition:opacity 1s ease var(--d,0s),transform 1.2s var(--out) var(--d,0s)}
@@ -78,7 +76,7 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 .bar.is-on{transform:none}
 .bar-in{display:flex;align-items:center;justify-content:space-between;height:64px}
 .bar-brand{display:flex;align-items:center;gap:12px}
-.bar-brand img{width:28px;height:29px;transform:scaleY(-1)}
+.bar-brand img{width:28px;height:29px}
 .bar-brand span{font:600 18px/1 "Inter Tight",sans-serif;letter-spacing:.11em;color:var(--acc)}
 .bar-nav,.ft-nav{display:flex;gap:max(28px,5rem);font-size:14px;line-height:1.35}
 .bar-nav a,.ft-nav a{opacity:.6;transition:opacity .45s ease}
@@ -86,27 +84,74 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 .bar-nav a:hover,.ft-nav a:hover{opacity:1}
 
 /* ═════════ 2. Чего у нас нет ═════════ */
-.st-top{display:flex;align-items:flex-end;justify-content:space-between;gap:4rem;margin-bottom:8rem}
-.st-top .h2{max-width:88rem}
-.st-script{font:400 5.4rem/1 "Marck Script",cursive;color:var(--acc);transform-origin:0 100%;rotate:-4deg;
-  margin:0 4rem 1rem 0;white-space:nowrap}
-.st-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
-.st-row{display:grid;grid-template-columns:8rem 1fr 44rem;align-items:center;gap:3rem;
-  padding:3.6rem 0;border-bottom:1px solid var(--line)}
-.st-n{align-self:start;padding-top:1.4rem;font-size:max(11px,1.2rem);letter-spacing:.16em;color:var(--t3)}
-.st-no{justify-self:start;margin:0;font:400 6.4rem/1 "Inter",sans-serif;letter-spacing:-.055em;
-  transition:color 1s ease .5s}
-/* зачёркивание рисуется слева направо по каждой строке, текст уходит в тень */
-.st-no span{background:linear-gradient(var(--acc),var(--acc)) 0 58%/0% .5rem no-repeat;
-  -webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 .6rem;margin:0 -.6rem;
-  transition:background-size 1.1s var(--ease) .15s}
-.st-yes{font-size:var(--txt);line-height:1.5;color:var(--t2);opacity:0;transform:translateX(3rem);
-  transition:opacity .9s ease .75s,transform 1.1s var(--out) .75s}
-.st-yes small{display:block;margin-bottom:1rem;font-size:max(10px,1.1rem);letter-spacing:.19em;
+/* Узлы 17:285–17:342, координаты от верха блока (y 2204 в кадре), колонка 1200 (как «О проекте»).
+   Строка — 127 px с линией сверху: номер и пункт на +26, «Вместо этого» на +33, описание на +61 */
+.strike{padding:13.8rem 0 21.2rem;overflow:hidden;isolation:isolate}
+.st-frame{position:relative;width:min(120rem,calc(100% - 32px));margin:0 auto}
+.st-h{margin:1.4rem 0 0;font:500 4.5rem/1.06 "Inter Tight",sans-serif;letter-spacing:-.09rem;color:#fff}
+.st-list{list-style:none;margin:6rem 0 0;padding:0}
+.st-row{display:grid;grid-template-columns:3.8rem 58.3rem 1fr;align-items:start;
+  min-height:12.7rem;padding-top:2.6rem;border-top:1px solid rgba(255,255,255,.23)}
+.st-n{font:600 max(11px,1.3rem)/1.35 "Inter Tight",sans-serif;color:rgba(255,255,255,.24)}
+.st-no{justify-self:start;max-width:37.1rem;margin:0;font:500 3.3rem/1.06 "Inter Tight",sans-serif;
+  letter-spacing:-.066rem;color:rgba(255,255,255,calc(1 - var(--p,0) * .75))}
+/* зачёркивание — линия 2 px акцентом на 60 % строки; длина = прогресс прокрутки строки --p (blocks.js),
+   тянется слева направо по каждой строке пункта; пункт уходит в тень вместе с ней */
+.st-no span{background:linear-gradient(var(--acc),var(--acc)) 0 60%/calc(var(--p,0) * 100%) max(2px,.2rem) no-repeat;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+/* «Вместо этого» и описание выпадают по словам сверху вниз из-под маски, когда строка зачёркнута
+   на треть (класс .is-yes ставит blocks.js) */
+.st-yes{max-width:45.7rem;margin:0;padding-top:.7rem;font:400 max(13px,1.5rem)/1.35 "Inter Tight",sans-serif;
+  color:rgba(255,255,255,.87)}
+.st-yes .w{display:inline-block;overflow:hidden;vertical-align:top;padding-top:.12em;margin-top:-.12em}
+.st-yes .w>span{display:inline-block;transform:translateY(-110%);
+  transition:transform .9s var(--out) calc(var(--i) * 22ms)}
+.st-row.is-yes .st-yes .w>span{transform:none}
+.st-yes small{display:block;margin-bottom:1.2rem;font:600 max(10px,1.2rem)/1.35 "Inter Tight",sans-serif;
   text-transform:uppercase;color:var(--acc)}
-.st-row.is-in .st-no{color:rgba(255,255,255,.26)}
-.st-row.is-in .st-no span{background-size:100% .5rem}
-.st-row.is-in .st-yes{opacity:1;transform:none}
+
+/* свет снизу — векторы 7–9 макета (#dd7a33, #b04a00, белый; размытие слоя 598), заранее отрисованы
+   в img/st-glow-*.webp: холст x −700…2500, y −300…1450 px макета от верха блока. Привязан к низу
+   блока, чтобы на телефоне, где блок выше, свет оставался у нижнего края; --drop опускает свет
+   ниже макетной точки, чтобы он захватывал в основном последний пункт.
+   Переливаются как пятна первого экрана: каждая полоса ходит по кругу, покачивается и «дышит»,
+   периоды взаимно простые — картина не повторяется. Анимируется только transform
+   --drop опускает свет ниже, чем в координатах макета: с учётом движения он иначе поднимался
+   на полэкрана, а в макете захватывает в основном последний пункт */
+.st-glow{position:absolute;left:50%;bottom:var(--drop);--drop:-22rem;z-index:-1;width:180rem;height:117rem;margin-left:-90rem;
+  pointer-events:none;--slow:1}
+.st-b{position:absolute;left:-70rem;top:-30rem;width:320rem;height:175rem;will-change:transform;
+  animation:st-orbit calc(var(--t) * var(--slow)) linear var(--dl) infinite var(--dir,normal)}
+.st-b img{display:block;width:100%;height:100%;transform-origin:var(--o);will-change:transform;
+  animation:st-sway calc(var(--sw) * var(--slow)) ease-in-out var(--dl) infinite alternate,
+            st-breathe calc(var(--br) * var(--slow)) ease-in-out var(--dl) infinite alternate}
+/* --o — центр полосы на холсте, вокруг него качание и «дыхание» */
+.st-b7{--r:9rem;--t:23s;--sw:13s;--br:9s;--dl:-5s;--o:54.9% 69%}
+.st-b8{--r:12rem;--t:31s;--dir:reverse;--sw:17s;--br:14s;--dl:-11s;--o:55.9% 75.1%}
+.st-b9{--r:8rem;--t:19s;--sw:11s;--br:12s;--dl:-3s;--o:58.2% 82.1%}
+@keyframes st-orbit{
+  from{transform:rotate(0deg) translateX(var(--r)) rotate(0deg)}
+  to  {transform:rotate(360deg) translateX(var(--r)) rotate(-360deg)}
+}
+@keyframes st-sway{from{rotate:-4deg}to{rotate:4deg}}
+@keyframes st-breathe{from{scale:.92}to{scale:1.08}}
+/* блок за экраном — не крутим (класс ставит blocks.js) */
+.strike:not(.is-live) .st-b,.strike:not(.is-live) .st-b img{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.st-glow{--slow:2}}
+
+/* ═════════ 2б. Фото интенсивов ═════════ */
+/* Сетка из макета: 1800×866 (ячейки 583/582×280, шаг 13, углы 16). Сцена прилипает к окну на всю
+   высоту секции; blocks.js на каждом кадре задаёт саму ширину сетки --W (от «центральное фото во всю
+   ширину» до финальной), сдвиг --y и затемнение --dim. Именно ширину, а не transform: scale — при
+   масштабировании браузер растягивает однажды отрисованный слой и фото рассыпается на пиксели,
+   а так каждый кадр берёт снимок из исходника в нужном размере */
+.life{position:relative;height:350vh;background:var(--bg)}
+.lf-stage{position:sticky;top:0;height:100vh;overflow:hidden}
+.lf-grid{position:absolute;left:50%;top:50%;width:var(--W,100vw);aspect-ratio:1800/866;
+  translate:-50% calc(-50% + var(--y,0px))}
+.lf-c{position:absolute;height:32.3326%;margin:0;overflow:hidden;border-radius:var(--rad,16px);background:#161616}
+.lf-c img{display:block;width:100%;height:100%;object-fit:cover}
+.lf-dim{position:absolute;inset:0;background:var(--bg);opacity:var(--dim,0);pointer-events:none}
 
 /* ═════════ 3. Горизонтальная лента ═════════ */
 .hs{position:relative;margin-top:18rem;background:var(--bg)}
@@ -383,7 +428,8 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
 
 /* ═════════ меньше движения ═════════ */
 @media (prefers-reduced-motion:reduce){
-  [data-split] .w>span,[data-reveal],.rv{transform:none!important;opacity:1!important;transition:none!important}
+  .st-yes .w>span,[data-reveal],.rv{transform:none!important;opacity:1!important;transition:none!important}
+  [data-split] .w{filter:none!important;opacity:1!important}
   .ap-script{clip-path:none}
 }
 
@@ -394,11 +440,13 @@ html{font-size:clamp(7.4px,calc(100vw / 180),12px)}
   .sec-head{margin-bottom:36px}
   .h2{font-size:40px}.h2-s{font-size:32px}.ap-h{font-size:48px}
   .bar-nav{display:none}
-  .st-top,.in-top,.ex-top,.org-top,.rv-top{flex-direction:column;align-items:flex-start;gap:24px;margin-bottom:40px}
-  .st-script{font-size:34px}
-  .st-row{grid-template-columns:1fr;gap:14px;padding:26px 0}
-  .st-n{padding:0}
-  .st-no{font-size:32px}
+  .in-top,.ex-top,.org-top,.rv-top{flex-direction:column;align-items:flex-start;gap:24px;margin-bottom:40px}
+  .strike{padding:90px 0 140px}
+  .st-h{font-size:32px;letter-spacing:-.02em}
+  .st-list{margin-top:40px}
+  .st-row{grid-template-columns:1fr;gap:10px;min-height:0;padding:22px 0}
+  .st-no{max-width:none;font-size:26px;letter-spacing:-.02em}
+  .st-yes{max-width:none}
   .hs{margin-top:90px}
   .hs-pin{position:relative;height:auto}
   .hs-track{flex-direction:column;align-items:stretch;gap:60px;padding:0 16px;transform:none!important}

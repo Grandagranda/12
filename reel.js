@@ -1,18 +1,20 @@
 // Ролик: блок «О проекте» уезжает вверх и открывает видео, которое стоит на месте.
 // Пока окно приоткрыто — кадр почти чёрный, затемнение уходит до макетного по мере прокрутки.
-// Кнопка «смотреть» стоит под надписью и тянется за курсором (как на первом экране Peroni):
-// курсор остаётся обычным, кнопка заметно отстаёт и, догнав, заливается акцентом.
-// Пока в кадре — играет без звука; клик открывает полный просмотр со звуком.
+// Кнопка плеера стоит под надписью справа (как в макете) и тянется за курсором (как на первом
+// экране Peroni): курсор остаётся обычным, кнопка заметно отстаёт. Как только курсор оказался
+// внутри круга — акцент растекается из точки входа; вышел за круг — стекает в точку выхода.
+// Фон — ролик с Kinescope без звука; клик открывает полный просмотр со звуком в плеере Kinescope.
 (function () {
   const root = document.documentElement;
   const reel = document.querySelector('.reel');
   const card = reel.querySelector('.reel-card');
-  const bg = card.querySelector('video');
+  const bg = card.querySelector('.reel-bg');
   const head = card.querySelector('.reel-h');
   const copy = card.querySelector('.reel-copy');
   const btn = card.querySelector('.reel-play');
   const modal = document.querySelector('.reel-modal');
-  const full = modal.querySelector('video');
+  const full = modal.querySelector('.reel-full');
+  const KIN = 'https://kinescope.io/embed/' + bg.dataset.kin;
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 
   // темп догона: 1 − e^(−K·dt) за кадр; K = 1.7 — это 2.8 % пути за кадр на 60 Гц, как у Peroni
@@ -20,14 +22,18 @@
 
   let box = { l: 0, t: 0, r: 0, b: 0 };   // видимая часть ролика (окно секции) в px окна
   const ptr = { x: 0, y: 0, in: false, seen: false };
-  let home = { x: 0, y: 0 }, pos = null, R = 70;
-  let raf = 0, last = 0, caught = false;
+  let home = { x: 0, y: 0 }, pos = null, R = 55;
+  let raf = 0, last = 0, caught = false, caughtAt = 0;
+  const RELEASE = 1.6, HOLD = 450;   // отпускаем на 1.6 радиуса от центра и не раньше чем через 450 мс
 
-  // дом кнопки — по центру, под надписью
+  // дом кнопки — под надписью, правее центра: в макете круг 109 px стоит в 1.7rem под текстом,
+  // его центр на 25.35rem правее середины кадра; на узком экране — просто по центру
   function measureHome() {
     R = btn.offsetWidth / 2;
+    const rem = parseFloat(getComputedStyle(root).fontSize);
     const c = copy.getBoundingClientRect();
-    home = { x: innerWidth / 2, y: c.bottom + R + innerWidth * 0.028 };
+    const x = innerWidth > 900 ? innerWidth / 2 + 25.35 * rem : innerWidth / 2;
+    home = { x: Math.min(x, innerWidth - R - 16), y: c.bottom + 1.7 * rem + R };
   }
 
   // ── скролл: ролик прибит к окну, видна только та часть, что под секцией ──
@@ -53,11 +59,13 @@
   measureHome();
   layout();
 
-  // ── фон играет только когда виден ──
-  new IntersectionObserver(([e]) => {
-    if (e.isIntersecting && !modal.classList.contains('is-open')) bg.play().catch(() => {});
-    else bg.pause();
-  }, { threshold: 0 }).observe(reel);
+  // ── фон (плеер Kinescope) подгружаем, когда блок в экране от окна ──
+  const io = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    bg.src = KIN + '?autoplay=1&muted=1&loop=1&playsinline=1&controls=0&autopause=0';
+    io.disconnect();
+  }, { rootMargin: '100% 0px' });
+  io.observe(reel);
 
   // ── кнопка за курсором ──
   function testHover() {
@@ -85,31 +93,40 @@
     pos.x += (tx - pos.x) * f;
     pos.y += (ty - pos.y) * f;
     const d = ptr.in ? Math.hypot(ptr.x - pos.x, ptr.y - pos.y) : Infinity;
-    // догнала — акцент; курсор снова оторвался — стекло (гистерезис, чтобы не мигало)
-    if (!caught && d < 10) { caught = true; btn.classList.add('is-caught'); }
-    else if (caught && d > 26) { caught = false; btn.classList.remove('is-caught'); }
-    btn.style.transform = `translate3d(${pos.x.toFixed(2)}px,${pos.y.toFixed(2)}px,0)`;
+    // курсор внутри круга — акцент. Отпускаем, только когда курсор ушёл заметно дальше края
+    // и захват держится хотя бы HOLD мс: кнопка отстаёт от курсора, и без этого на краю круга
+    // заливка включалась и выключалась по нескольку раз — кнопка дёргалась
+    if (!caught && d < R) { caught = true; caughtAt = now; spot(); btn.classList.add('is-caught'); }
+    else if (caught && d > R * RELEASE && now - caughtAt > HOLD) { caught = false; spot(); btn.classList.remove('is-caught'); }
+    // положение — через translate, а не transform: scale (при захвате) применяется до translate
+    // и не растягивает координаты, иначе кнопку откидывало от курсора и она дёргалась
+    btn.style.translate = `${pos.x.toFixed(2)}px ${pos.y.toFixed(2)}px`;
     if (Math.hypot(tx - pos.x, ty - pos.y) > 0.15) raf = requestAnimationFrame(frame);
+  }
+
+  // точка, откуда растекается (и куда стекает) заливка: курсор, прижатый к краю круга
+  function spot() {
+    let dx = ptr.x - pos.x, dy = ptr.y - pos.y;
+    const k = Math.hypot(dx, dy) / R;
+    if (k > 1) { dx /= k; dy /= k; }
+    btn.style.setProperty('--x', (50 + dx / R * 50).toFixed(1) + '%');
+    btn.style.setProperty('--y', (50 + dy / R * 50).toFixed(1) + '%');
   }
 
   // ── полный просмотр ──
   function open() {
-    bg.pause();
     modal.classList.add('is-open');
     root.classList.add('is-locked');
     testHover();
-    full.currentTime = 0;
-    full.muted = false;
-    full.play().catch(() => {});
+    full.innerHTML = `<iframe src="${KIN}?autoplay=1" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
     if (modal.requestFullscreen) modal.requestFullscreen().catch(() => {});
   }
   function close() {
     if (!modal.classList.contains('is-open')) return;
-    full.pause();
+    full.innerHTML = '';
     modal.classList.remove('is-open');
     root.classList.remove('is-locked');
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    bg.play().catch(() => {});
     testHover();
   }
   card.addEventListener('click', open);
@@ -118,7 +135,6 @@
   addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
   // вышли из полноэкранного режима браузера (Esc) — закрываем и окно
   document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) close(); });
-  full.addEventListener('ended', close);
 
   window.__reel = { layout, box: () => box, pos: () => pos, ptr, frame, home: () => home };   // для проверки
 })();

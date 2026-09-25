@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>
+  // картинка не загрузилась — прячем, чтобы браузер не рисовал рамку битого изображения
+  addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true);
+</script>
+<script>
   // кадр 1800×1044 (первый экран) вписываем в окно целиком: и по ширине, и по высоте
   (function(){var r=document.documentElement;
     function fit(){r.style.setProperty("--k",Math.min(r.clientWidth/1800,innerHeight/1044))}
@@ -13,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Inter+Tight:wght@400;500;600&family=Manrope:wght@700&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="blocks.css">
+<link rel="stylesheet" href="blocks.css?v=9e122f87">
 <style>
 /* ─────────── кадр «70», все координаты из Figma ─────────── */
 *,*::before,*::after{box-sizing:border-box}
@@ -38,25 +42,31 @@ p{margin:0}
 .hero-bg>*{position:absolute}
 .hero-bg img{display:block;width:100%;height:100%;max-width:none}
 .l-base{left:-4000px;top:0;width:9800px;height:924px;background:#0a0a0a}
-/* фон оборудование 1 */
-.l-equip1{left:433px;top:-167px;width:1989px;height:1110px;filter:blur(21px);
-  /* сдвиг вправо: силуэт прибора из этого снимка (в Figma он за краем кадра)
-     уходит за экран и на широких мониторах */
-  transform:translateX(360px)}
-.l-equip1 img{object-fit:cover}
-.l-equip1::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(166.81703448150364deg,#0a0a0a 26.946%,rgba(10,10,10,0) 34.376%)}
-/* фон_оборудование-removebg 1 */
-.l-equip2{left:1299px;top:59px;width:538px;height:718px;overflow:hidden;filter:blur(3.3px);
-  /* прибор на заднем плане: уменьшен под масштаб людей, стоит на том же уровне пола */
-  transform:translateX(40px) scale(.84);transform-origin:50% 100%}
-/* картинка уже обрезана до видимой части узла; правый край растворён в самом файле */
+/* фон оборудование 1 — кадр из Figma уже с размытием 42 и градиентом, обрезан по кадру 1800;
+   правый край растворяем, чтобы на широких экранах не было ступеньки */
+.l-equip1{left:433px;top:0;width:1367px;height:943px}
+.l-equip1 img{object-fit:fill}
+/* окно шире кадра (или кадр уменьшен по высоте) — по бокам оставались тёмные полосы.
+   Продолжаем размытые фоны за край кадра их зеркальными копиями: на стыке картинка
+   совпадает (копия заходит на 2 px внутрь, чтобы не было шва сглаживания), а дальний край (маска задана до отражения) копии мягко уходит в #0a0a0a */
+.l-ext{top:0;transform:scaleX(-1)}
+.l-ext-l{left:-1178px;width:1180px;height:901px;
+  -webkit-mask-image:linear-gradient(90deg,#000 35%,transparent);mask-image:linear-gradient(90deg,#000 35%,transparent)}
+.l-ext-r{left:1798px;width:1369px;height:943px;
+  -webkit-mask-image:linear-gradient(270deg,#000 35%,transparent);mask-image:linear-gradient(270deg,#000 35%,transparent)}
+.l-ext img{object-fit:fill}
+/* фон_оборудование-removebg 1 — прибор справа, размытие 6.6 уже в картинке.
+   Как в макете, низ прибора (стол и ножки) плавно уходит в тень — краёв не видно;
+   правый край растворяется раньше, чтобы у кромки кадра не было засвета */
+.l-equip2{left:1305px;top:119.5px;width:495px;height:665px;
+  -webkit-mask-image:linear-gradient(180deg,#000 58%,transparent 90%),linear-gradient(90deg,#000 78%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(180deg,#000 58%,transparent 90%),linear-gradient(90deg,#000 78%,transparent);
+  mask-composite:intersect}
 .l-equip2 img{object-fit:fill}
-/* фон оборудование 2 — тот же кадр в тёплой гамме, отражён по горизонтали, 74 % */
-.l-equip3{left:-811px;top:-209px;width:1989px;height:1110px;transform:scaleX(-1);filter:blur(21px);opacity:.74}
-.l-equip3 img{object-fit:cover}
-.l-equip3::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(166.81703448150364deg,#0a0a0a 26.946%,rgba(10,10,10,0) 34.376%)}
+/* фон оборудование 2 — тот же снимок, отражён, 74 %; всё уже запечено в картинке */
+.l-equip3{left:0;top:0;width:1178px;height:901px}
+.l-equip3 img{object-fit:fill}
 /* «живой» фон: пятна в цветах макета (оранжевые, янтарные, бирюзовые и чёрные) над размытыми снимками,
    под прибором и людьми. Каждое пятно само по себе: ходит по кругу (без разворота
    назад), медленно поворачивается и «дышит»; периоды взаимно простые, поэтому общая
@@ -77,19 +87,25 @@ p{margin:0}
   /* фон не глушим — только замедляем вдвое */
   .l-flow{--slow:2}
 }
+/* за людьми фон чёрный, как в макете: гасим зелёный отлив размытого снимка между ними */
+.l-dark{left:480px;top:-120px;width:900px;height:960px;pointer-events:none;
+  background:radial-gradient(closest-side,#0a0a0a 45%,rgba(10,10,10,.75) 70%,rgba(10,10,10,0))}
 /* люди */
 .l-p74{left:743px;top:29px;width:774px;height:1136px}
-.l-p74 img{object-fit:cover}
-.l-p6cb{left:373px;top:-11px;width:647px;height:761px}
+.l-p74 img{object-fit:fill}
+/* узел начинается на y=−11, верх срезан маской кадра — в картинке видимая часть 647×750 */
+.l-p6cb{left:373px;top:0;width:647px;height:750px}
 /* кадр из оригинала 3494×2953 уже вырезан под узел 647×761 */
 .l-p6cb img{object-fit:fill}
 /* тени внизу */
 /* тени по горизонтали однородные — тянем на всю ширину окна */
 .l-sh1{left:-4000px;top:447px;width:9800px;height:459px}
 .l-sh2{left:-4000px;top:602px;width:9800px;height:264px}
+/* градиент из макета: прозрачный сверху → #0a0a0a к 80 % высоты */
+.l-sh1,.l-sh2{background:linear-gradient(180deg,rgba(10,10,10,0) 0%,#0a0a0a 80%)}
 
 /* шапка */
-.logo{left:226px;top:20px;width:36px;height:37px;transform:scaleY(-1)}
+.logo{left:226px;top:20px;width:36px;height:37px}
 .brand{left:275px;top:26px;font-weight:600;font-size:22px;line-height:normal;
        letter-spacing:2.42px;color:#d0a161;white-space:nowrap}
 .nav{left:50%;top:28px;transform:translateX(-50%);display:flex;align-items:center;gap:63px;
@@ -179,29 +195,45 @@ p{margin:0}
    clip-path обрезает и fixed-потомков, поэтому видео видно только в пределах секции */
 .reel{position:relative;z-index:1;height:100vh;background:#000;clip-path:inset(0)}
 .reel-card{position:fixed;inset:0;cursor:pointer}
-.reel-card video{display:block;width:100%;height:100%;object-fit:cover}
+.reel-card{overflow:hidden}
+/* фон — плеер Kinescope без звука; iframe 16:9 растягиваем «как cover» и отключаем мышь,
+   чтобы его панель не всплывала и клик доставался карточке */
+.reel-bg{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(100vh,56.25vw);
+  transform:translate(-50%,-50%);border:0;pointer-events:none}
 /* затемнение: в макете видео на 55 % над #0a0a0a; пока окно только приоткрылось —
    кадр почти чёрный и светлеет до макетных 45 % тени, когда ролик встал целиком */
 .reel-shade{position:absolute;inset:0;background:#0a0a0a;opacity:var(--shade,.45);pointer-events:none}
 .reel-copy{position:absolute;left:50%;top:44%;width:84.1rem;transform:translate(-50%,-50%);
-  display:flex;flex-direction:column;align-items:center;gap:1.2rem;text-align:center;pointer-events:none}
+  display:flex;flex-direction:column;align-items:center;gap:1.4rem;text-align:center;pointer-events:none}
 .reel-h{margin:0;font:500 4rem/1.06 "Inter Tight",sans-serif;letter-spacing:-.08rem;color:#fff}
 
-/* кнопка «смотреть»: стоит под надписью, тянется за курсором и, догнав, заливается акцентом
-   (как кнопка первого экрана Peroni); курсор при этом обычный */
-.reel-play{position:absolute;left:0;top:0;width:14rem;height:14rem;margin:-7rem 0 0 -7rem;border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;pointer-events:none;
-  will-change:transform;transition:background-color .45s ease,border-color .45s ease,color .45s ease}
-.reel-play svg{width:1.6rem;height:1.8rem;margin-left:.4rem;fill:currentColor}
-.reel-play span{font:500 max(10px,1.1rem)/1 "Inter Tight",sans-serif;letter-spacing:.19em;text-transform:uppercase}
-.reel-play.is-caught{background:#d0a161;border-color:#d0a161;color:#0a0a0a}
+/* кнопка плеера (узел 6:189): полупрозрачный акцентный круг 109 px с белым треугольником.
+   Стоит справа под надписью и тянется за курсором; как только курсор оказался внутри круга —
+   акцент растекается из точки входа, треугольник уезжает вправо и прилетает новый слева,
+   от круга расходится волна; размер круга не меняется, чтобы он не дёргался. Курсор уходит из круга — заливка стекает в точку выхода */
+.reel-play{position:absolute;left:0;top:0;width:10.9rem;height:10.9rem;margin:-5.45rem 0 0 -5.45rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;isolation:isolate;
+  background:rgba(208,161,97,.36);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  color:#fff;pointer-events:none;will-change:translate}
+.reel-play::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:50%;background:#d0a161;
+  clip-path:circle(0 at var(--x,50%) var(--y,50%));transition:clip-path .65s cubic-bezier(.7,0,.2,1)}
+.reel-play::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid #d0a161;opacity:0}
+.reel-play-ic{position:relative;width:1.1rem;height:1.2rem;margin-left:.2rem;overflow:hidden;flex:none}
+.reel-play-ic svg{position:absolute;inset:0;width:100%;height:100%;fill:currentColor;
+  transition:transform .55s cubic-bezier(.7,0,.2,1) .05s,fill .4s ease}
+.reel-play-ic svg+svg{transform:translateX(-180%)}
+.reel-play.is-caught::before{clip-path:circle(105% at var(--x,50%) var(--y,50%))}
+.reel-play.is-caught::after{animation:reel-wave .9s cubic-bezier(.2,.8,.2,1)}
+.reel-play.is-caught .reel-play-ic svg{transform:translateX(180%);fill:#0a0a0a}
+.reel-play.is-caught .reel-play-ic svg+svg{transform:none}
+@keyframes reel-wave{from{opacity:.9;scale:1}to{opacity:0;scale:1.6}}
+@media (prefers-reduced-motion:reduce){.reel-play.is-caught::after{animation:none}}
 
 /* полный просмотр со звуком */
 .reel-modal{position:fixed;inset:0;z-index:100;background:#000;display:none}
 .reel-modal.is-open{display:block}
-.reel-modal video{width:100%;height:100%;object-fit:contain;background:#000}
+.reel-full{position:absolute;inset:0}
+.reel-modal iframe{display:block;width:100%;height:100%;border:0;background:#000}
 .reel-close{position:absolute;top:24px;right:24px;width:52px;height:52px;border:0;border-radius:50%;
   background:rgba(255,255,255,.12);color:#fff;font:300 30px/1 "Inter Tight",sans-serif;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:background-color .25s}
@@ -256,6 +288,8 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
     <div class="l-base"></div>
     <div class="l-equip1"><img src="img/equip-a.webp" alt=""></div>
     <div class="l-equip3"><img src="img/equip-b.webp" alt=""></div>
+    <div class="l-ext l-ext-l"><img src="img/equip-b.webp" alt=""></div>
+    <div class="l-ext l-ext-r"><img src="img/equip-a.webp" alt=""></div>
     <div class="l-flow" aria-hidden="true">
       <svg width="0" height="0" style="position:absolute"><filter id="kblur" x="-300%" y="-300%" width="700%" height="700%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="80"/></filter></svg>
       <!-- тёмные пятна -->
@@ -263,11 +297,6 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
         <svg viewBox="0 0 1440 1440"><ellipse cx="720" cy="720" rx="460" ry="210" fill="#0a0a0a" opacity=".7" filter="url(#kblur)"/></svg></div>
       <div class="bl" style="left:1510px;top:410px;width:1280px;height:1280px;--r:220px;--t:29s;--dir:reverse;--sp:83s;--sdir:reverse;--b:13s;--dl:-7s">
         <svg viewBox="0 0 1280 1280"><ellipse cx="640" cy="640" rx="380" ry="190" fill="#0a0a0a" opacity=".6" filter="url(#kblur)"/></svg></div>
-      <!-- бирюза: глубокий холодный провал между людьми и справа сверху -->
-      <div class="bl" style="left:1060px;top:-260px;width:1560px;height:1560px;--r:300px;--t:37s;--dir:reverse;--sp:71s;--b:19s;--dl:-22s">
-        <svg viewBox="0 0 1560 1560"><ellipse cx="780" cy="780" rx="520" ry="170" transform="rotate(-12 780 780)" fill="#0b3a42" opacity=".6" filter="url(#kblur)"/></svg></div>
-      <div class="bl" style="left:780px;top:-80px;width:1300px;height:1300px;--r:230px;--t:43s;--sp:101s;--sdir:reverse;--b:15s;--dl:-31s">
-        <svg viewBox="0 0 1300 1300"><ellipse cx="650" cy="650" rx="360" ry="200" fill="#06302a" opacity=".55" filter="url(#kblur)"/></svg></div>
       <!-- янтарь слева -->
       <div class="bl" style="left:140px;top:100px;width:1240px;height:1240px;--r:240px;--t:31s;--sp:89s;--sdir:reverse;--b:11s;--dl:-4s">
         <svg viewBox="0 0 1240 1240"><ellipse cx="620" cy="620" rx="360" ry="150" fill="#2e2606" opacity=".7" filter="url(#kblur)"/></svg></div>
@@ -279,11 +308,12 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
       <div class="bl" style="left:1350px;top:420px;width:1200px;height:1200px;--r:340px;--t:19s;--dir:reverse;--sp:67s;--b:12s;--dl:-11s">
         <svg viewBox="0 0 1200 1200"><ellipse cx="600" cy="600" rx="340" ry="120" fill="#d98a3c" opacity=".3" filter="url(#kblur)"/></svg></div>
     </div>
+    <div class="l-dark"></div>
     <div class="l-equip2"><img src="img/removebg.webp" alt=""></div>
-    <div class="l-p74"><img src="img/p74.webp" alt=""></div>
-    <div class="l-p6cb"><img src="img/p6cb.webp" alt=""></div>
-    <div class="l-sh1"><img src="img/shadow1.png" alt=""></div>
-    <div class="l-sh2"><img src="img/shadow2.png" alt=""></div>
+    <div class="l-p74"><img src="img/p74.webp?v=bc203474" alt=""></div>
+    <div class="l-p6cb"><img src="img/p6cb.webp?v=748fec7a" alt=""></div>
+    <div class="l-sh1"></div>
+    <div class="l-sh2"></div>
   </div>
 
   <img class="abs logo" src="img/logo.svg" alt="">
@@ -381,20 +411,20 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
 <!-- ═════════ 3. Ролик: открывается из-под блока, затемнение уходит по скроллу ═════════ -->
 <section class="reel" id="about" aria-label="О школе КМК">
   <div class="reel-card" role="button" tabindex="0" aria-label="Смотреть видео со звуком">
-    <!-- в фоне — облегчённый фрагмент без звука; полный ролик грузится только по клику -->
-    <video src="video/about-loop.mp4" poster="video/about-poster.jpg" muted loop playsinline autoplay preload="auto"></video>
+    <!-- в фоне ролик с Kinescope без звука; плеер грузится, когда блок подъезжает к окну -->
+    <iframe class="reel-bg" data-kin="3ghpcBgKrTTJfXFk7nVMNA" title="Видео о школе КМК" tabindex="-1" allow="autoplay; encrypted-media"></iframe>
     <div class="reel-shade"></div>
     <div class="reel-copy">
-      <p class="ab-ey"><i></i>интервью с экспертами</p>
+      <p class="ab-ey"><i></i>о нас</p>
       <h2 class="reel-h" data-split>Учитесь у&nbsp;тех, кто каждый день принимает пациентов, — и&nbsp;уносите в&nbsp;кабинет то,&nbsp;что&nbsp;работает</h2>
     </div>
-    <!-- кнопка стоит под надписью и тянется за курсором; сам курсор остаётся обычным -->
-    <div class="reel-play" aria-hidden="true"><svg viewBox="0 0 16 18"><path d="M16 9 0 18V0z"/></svg><span>смотреть</span></div>
+    <!-- кнопка плеера стоит под надписью справа и тянется за курсором; сам курсор остаётся обычным -->
+    <div class="reel-play" aria-hidden="true"><i class="reel-play-ic"><svg viewBox="0 0 11 12"><path d="M11 6 0 12V0z"/></svg><svg viewBox="0 0 11 12"><path d="M11 6 0 12V0z"/></svg></i></div>
   </div>
 </section>
 
 <div class="reel-modal" role="dialog" aria-modal="true" aria-label="Видео о школе КМК">
-  <video src="video/about.mp4" poster="video/about-poster.jpg" controls playsinline preload="none"></video>
+  <div class="reel-full"></div>
   <button class="reel-close" type="button" aria-label="Закрыть">×</button>
 </div>
 
@@ -415,22 +445,22 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
 
 <main class="blocks">
 
-<!-- ═════════ 2. Чего у нас нет ═════════ -->
-<section class="sec strike">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="ey"><i></i>Принцип</p>
-      <p class="ey ey-r">02 / 08</p>
-    </div>
-    <div class="st-top">
-      <h2 class="h2" data-split>Мы убрали всё, что мешает учиться</h2>
-      <p class="st-script" data-reveal>и оставили практику</p>
-    </div>
+<!-- ═════════ 2. Чего у нас нет (узлы 17:285–17:342): пункты зачёркиваются по скроллу,
+     снизу поднимается тёплый свет — три размытые полосы из макета, медленно переливаются ═════════ -->
+<section class="sec strike" aria-labelledby="st-h">
+  <div class="st-glow" aria-hidden="true">
+    <div class="st-b st-b7"><img src="img/st-glow-7.webp" alt=""></div>
+    <div class="st-b st-b8"><img src="img/st-glow-8.webp" alt=""></div>
+    <div class="st-b st-b9"><img src="img/st-glow-9.webp" alt=""></div>
+  </div>
+  <div class="st-frame">
+    <p class="ab-ey"><i></i>Принцип</p>
+    <h2 class="st-h" id="st-h" data-split>Мы убрали всё,<br>что мешает учиться</h2>
     <ol class="st-list">
       <li class="st-row">
         <span class="st-n">01</span>
         <p class="st-no"><span>Онлайн-уроков в&nbsp;записи</span></p>
-        <p class="st-yes"><small>Вместо этого</small>Только очно, в&nbsp;Санкт-Петербурге. Сложные навыки отрабатываются руками — с&nbsp;обратной связью и&nbsp;разбором ошибок.</p>
+        <p class="st-yes"><small>Вместо этого</small>Только очно, в&nbsp;Санкт-Петербурге. Сложные навыки отрабатываются руками — с&nbsp;обратной связью и&nbsp;разбором ошибок</p>
       </li>
       <li class="st-row">
         <span class="st-n">02</span>
@@ -453,6 +483,26 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
         <p class="st-yes"><small>Вместо этого</small>Интенсивы для тех, кто уже работает с&nbsp;пациентами и&nbsp;хочет систему вместо разрозненной информации.</p>
       </li>
     </ol>
+  </div>
+</section>
+
+<!-- ═════════ 2б. Фото интенсивов (кадры «1» и «2» макета, узлы 23:487–23:495): центральное фото
+     поднимается из темноты во всю ширину, свет блока выше гаснет, затем вся сетка 3×3 плавно
+     уменьшается к центру, и слева, справа, сверху и снизу открываются остальные фото ═════════ -->
+<section class="life" aria-label="Фото с интенсивов">
+  <div class="lf-stage">
+    <div class="lf-grid">
+      <figure class="lf-c" style="left:0.7222%;top:0.0000%;width:32.3889%"><img src="img/life/01.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:33.8333%;top:0.0000%;width:32.3333%"><img src="img/life/02.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:66.8889%;top:0.0000%;width:32.3889%"><img src="img/life/03.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:0.7222%;top:33.8337%;width:32.3889%"><img src="img/life/04.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:33.8333%;top:33.8337%;width:32.3333%"><img src="img/life/05.jpg" alt="" decoding="async" style="object-position:50% 38%"></figure>
+      <figure class="lf-c" style="left:66.8889%;top:33.8337%;width:32.3889%"><img src="img/life/06.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:0.7222%;top:67.6674%;width:32.3889%"><img src="img/life/07.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:33.8333%;top:67.6674%;width:32.3333%"><img src="img/life/08.webp" alt="" loading="lazy" decoding="async"></figure>
+      <figure class="lf-c" style="left:66.8889%;top:67.6674%;width:32.3889%"><img src="img/life/09.webp" alt="" loading="lazy" decoding="async"></figure>
+    </div>
+    <div class="lf-dim" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -823,9 +873,9 @@ a:hover .roll>span,a:focus-visible .roll>span{transform:translateY(-1.35em)}
 </div>
 
 
-<script src="smooth-scroll.js"></script>
-<script src="reel.js"></script>
-<script src="ui.js"></script>
-<script src="blocks.js"></script>
+<script src="smooth-scroll.js?v=850f2b6e"></script>
+<script src="reel.js?v=8bee7bac"></script>
+<script src="ui.js?v=783d3760"></script>
+<script src="blocks.js?v=800f00b0"></script>
 </body>
 </html>
