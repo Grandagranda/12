@@ -1,0 +1,165 @@
+/* ═══════════════════════════════════════════════════════════════
+   СТРОЯРС — дизайн ПК-версии (от 1280 px, макет на 1440–1920)
+   Премиальный минимализм + стекло. Единственный цветной элемент —
+   луч лазерного уровня (--laser): знак точности, которой мы продаём.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  /* цвет */
+  --ink:#0F1110;          /* мокрый графит — фон */
+  --ink-2:#161917;        /* подложка секций */
+  --plaster:#ECE7DE;      /* известковая штукатурка — основной текст, кнопки */
+  --stone:#A19D94;        /* второстепенный текст */
+  --stone-2:#6E6B65;      /* подписи, неактивное */
+  --oak:#B08A62;          /* дуб — редкий тёплый акцент в цифрах */
+  --laser:#62FF9A;        /* луч лазерного уровня — только линии и живые значения */
+  --laser-glow:rgba(98,255,154,.55);
+
+  /* стекло */
+  --glass:linear-gradient(135deg,rgba(236,231,222,.11),rgba(236,231,222,.035));
+  --glass-strong:linear-gradient(135deg,rgba(236,231,222,.16),rgba(236,231,222,.06));
+  --glass-line:rgba(236,231,222,.16);
+  --glass-hi:inset 0 1px 0 rgba(255,255,255,.14);
+  --blur:blur(26px) saturate(140%);
+  --hair:rgba(236,231,222,.12);
+
+  /* типографика */
+  --f-display:"Geologica",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+
+  /* сетка */
+  --wrap:1320px;
+  --gutter:60px;
+  --r:22px;
+  --r-s:14px;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{margin:0;min-width:1280px;background:var(--ink);color:var(--plaster);
+  font:400 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+p{margin:0}
+h1,h2,h3,h4{margin:0;font-weight:inherit}
+::selection{background:var(--plaster);color:var(--ink)}
+:focus-visible{outline:1.5px solid var(--laser);outline-offset:3px;border-radius:6px}
+
+.wrap{width:min(var(--wrap),100% - var(--gutter) * 2);margin-inline:auto}
+
+/* ─── типографическая шкала ─── */
+.t-display{font:200 clamp(64px,6.2vw,112px)/.98 var(--f-display);letter-spacing:-.035em}
+.t-h2{font:250 clamp(48px,4.2vw,76px)/1.02 var(--f-display);letter-spacing:-.03em}
+.t-h3{font:300 30px/1.15 var(--f-display);letter-spacing:-.015em}
+.t-lead{font:400 20px/1.55 var(--f-body);color:var(--stone)}
+.t-mono{font:400 12px/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--stone)}
+.t-num{font:200 44px/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.t-h2 em,.t-display em{font-style:normal;color:var(--stone)}
+
+/* ─── стекло ─── */
+.glass{background:var(--glass);border:1px solid var(--glass-line);box-shadow:var(--glass-hi),0 30px 80px -30px rgba(0,0,0,.6);
+  -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-radius:var(--r)}
+.glass--strong{background:var(--glass-strong)}
+
+/* ─── кнопки ─── */
+.btn{display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 28px;border-radius:999px;border:0;cursor:pointer;
+  font:500 16px/1 var(--f-body);letter-spacing:.005em;white-space:nowrap;transition:transform .4s var(--ease),background .3s,color .3s,box-shadow .3s}
+.btn--solid{background:var(--plaster);color:var(--ink)}
+.btn--solid:hover{background:#fff;box-shadow:0 10px 40px -8px rgba(236,231,222,.45)}
+.btn--glass{background:rgba(236,231,222,.08);border:1px solid var(--glass-line);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+.btn--glass:hover{background:rgba(236,231,222,.16)}
+.btn--s{height:44px;padding:0 20px;font-size:15px}
+.btn .arr{width:18px;height:18px;flex:none;transition:transform .4s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+
+/* ─── лазерный луч — фирменный знак ─── */
+.laser{position:absolute;left:0;right:0;height:1px;pointer-events:none;z-index:3}
+.laser::before{content:"";position:absolute;inset:0;background:var(--laser);
+  box-shadow:0 0 6px 1px var(--laser-glow),0 0 22px 2px rgba(98,255,154,.25);
+  transform-origin:0 50%;transform:scaleX(var(--laser-p,1));transition:transform 1.6s var(--ease)}
+.laser__emitter{position:absolute;left:var(--gutter);top:-4px;width:9px;height:9px;border-radius:50%;background:var(--laser);
+  box-shadow:0 0 14px 4px var(--laser-glow)}
+.laser__tag{position:absolute;right:var(--gutter);top:-30px;font:400 11px/1 var(--f-mono);letter-spacing:.1em;color:var(--laser);opacity:.9}
+.is-loading .laser{--laser-p:0}
+
+/* ─── шапка ─── */
+.header{position:fixed;top:18px;left:0;right:0;z-index:40;pointer-events:none}
+.header__bar{pointer-events:auto;display:flex;align-items:center;gap:36px;height:68px;padding:0 10px 0 28px;border-radius:999px;
+  transition:background .4s,box-shadow .4s}
+.logo{display:flex;align-items:center;gap:12px;font:400 17px/1 var(--f-display);letter-spacing:.28em;text-transform:uppercase}
+.logo__mark{width:26px;height:26px;border:1.5px solid var(--plaster);border-radius:6px;position:relative;flex:none}
+.logo__mark::after{content:"";position:absolute;left:-5px;right:-5px;top:50%;height:1.5px;background:var(--laser);box-shadow:0 0 8px var(--laser-glow)}
+.nav{display:flex;gap:30px;margin-left:auto;font-size:15px;color:var(--stone)}
+.nav a{transition:color .25s;position:relative;white-space:nowrap}
+.nav a:hover,.nav a[aria-current]{color:var(--plaster)}
+.header__phone{font:400 15px/1 var(--f-mono);letter-spacing:.02em;white-space:nowrap}
+
+/* ─── общий ритм секций ─── */
+.section{position:relative;padding:120px 0;isolation:isolate}
+.section__bg{position:absolute;inset:0;z-index:-1;overflow:hidden}
+.section__bg img{width:100%;height:100%;object-fit:cover}
+.section__bg::after{content:"";position:absolute;inset:0;background:var(--shade,linear-gradient(180deg,var(--ink) 0%,rgba(15,17,16,.72) 20%,rgba(15,17,16,.72) 80%,var(--ink) 100%))}
+.section__head{display:grid;grid-template-columns:1fr 440px;align-items:end;gap:80px;margin-bottom:72px}
+.section__head .t-lead{padding-bottom:10px}
+.eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--stone-2)}
+
+/* появление при прокрутке */
+.rv{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .rv{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+
+/* ─── формы ─── */
+.field{display:flex;flex-direction:column;gap:10px}
+.field label,.field .t-mono{color:var(--stone-2)}
+.input{width:100%;min-width:0;height:60px;padding:0 22px;border-radius:var(--r-s);border:1px solid var(--glass-line);background:rgba(15,17,16,.35);
+  font-size:18px;outline:none;transition:border-color .25s,background .25s}
+.input:focus{border-color:rgba(236,231,222,.45);background:rgba(15,17,16,.55)}
+.input::placeholder{color:var(--stone-2)}
+
+.seg{display:flex;padding:5px;gap:4px;border-radius:999px;background:rgba(15,17,16,.4);border:1px solid var(--hair)}
+.seg button{flex:1;height:44px;padding:0 18px;border:0;border-radius:999px;background:none;cursor:pointer;color:var(--stone);font-size:15px;transition:background .3s,color .3s}
+.seg button:hover{color:var(--plaster)}
+.seg button[aria-pressed="true"]{background:var(--plaster);color:var(--ink)}
+
+.chip{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:999px;border:1px solid var(--glass-line);
+  background:rgba(236,231,222,.04);color:var(--stone);font-size:14px;cursor:pointer;transition:all .3s}
+.chip:hover{color:var(--plaster);border-color:rgba(236,231,222,.35)}
+.chip[aria-pressed="true"]{background:var(--plaster);color:var(--ink);border-color:var(--plaster)}
+
+/* ─── подвал ─── */
+.footer{position:relative;padding:90px 0 0;border-top:1px solid var(--hair);overflow:hidden}
+.footer__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding-bottom:70px}
+.footer__grid h4{margin-bottom:20px}
+.footer__grid ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;color:var(--stone);font-size:15px}
+.footer__grid a:hover{color:var(--plaster)}
+.footer__word{font:100 min(21.5vw,410px)/.78 var(--f-display);letter-spacing:-.05em;text-align:center;white-space:nowrap;
+  color:transparent;-webkit-text-stroke:1px rgba(236,231,222,.16);margin-bottom:-.14em;user-select:none}
+.footer__legal{display:flex;justify-content:space-between;padding:26px 0;border-top:1px solid var(--hair);color:var(--stone-2);font-size:13px;position:relative;z-index:1;background:var(--ink)}
+
+/* ─── модальное окно видео ─── */
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(10,11,10,.55);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);opacity:0;pointer-events:none;transition:opacity .45s var(--ease)}
+.modal.open{opacity:1;pointer-events:auto}
+.modal__box{width:min(1100px,80vw);aspect-ratio:16/9;position:relative;overflow:hidden;padding:0;transform:scale(.96);transition:transform .6s var(--ease)}
+.modal.open .modal__box{transform:none}
+.modal__box img{width:100%;height:100%;object-fit:cover;filter:brightness(.55)}
+.modal__close{position:absolute;top:20px;right:20px;width:48px;height:48px;border-radius:50%;border:1px solid var(--glass-line);
+  background:rgba(15,17,16,.5);cursor:pointer;display:grid;place-items:center}
+.modal__caption{position:absolute;left:36px;bottom:32px;right:36px;display:flex;justify-content:space-between;align-items:end}
+.modal__bar{position:absolute;left:36px;right:36px;bottom:20px;height:2px;background:rgba(236,231,222,.2)}
+.modal__bar i{display:block;height:100%;width:0;background:var(--plaster)}
+
+.play{width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:rgba(236,231,222,.14);border:1px solid rgba(236,231,222,.28);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  transition:transform .5s var(--ease),background .3s}
+.play svg{width:18px;height:18px;margin-left:3px}
+*:hover>.play,*:hover>*>.play{transform:scale(1.08);background:rgba(236,231,222,.24)}

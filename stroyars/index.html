@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="ru" class="is-loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Строярс — дизайн и ремонт квартир и домов под ключ в Краснодаре</title>
+<meta name="description" content="Дизайн-проект и ремонт под ключ в Краснодаре. Цена фиксируется в договоре, еженедельный фотоотчёт, гарантия 3 года. Три класса отделки: Базовый, Оптимальный, Премиальный.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..400&family=Golos+Text:wght@400;500&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arr" viewBox="0 0 18 18"><path d="M2 9h13M10 4l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 18 18"><path d="M3 1.5v15L16 9z" fill="currentColor"/></symbol>
+  <symbol id="i-x" viewBox="0 0 18 18"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 18 18"><path d="M3 9.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="1.4"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 18 18"><path d="M4 9h10" stroke="currentColor" stroke-width="1.4"/></symbol>
+</svg>
+
+<!-- ═════════ ШАПКА ═════════ -->
+<header class="header">
+  <div class="wrap header__bar glass">
+    <a class="logo" href="index.html" aria-label="Строярс — на главную"><span class="logo__mark"></span>Строярс</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#price">Цены</a>
+      <a href="#portfolio">Портфолио</a>
+      <a href="#process">Как мы работаем</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#about">О компании</a>
+      <a href="#knowledge">Статьи</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="header__phone" href="tel:+79000000000">+7 900 000-00-00</a>
+    <a class="btn btn--solid btn--s" href="#contacts">Обсудить объект</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ═════════ 1. ПЕРВЫЙ ЭКРАН: ТРИ КНОПКИ ═════════ -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__bg"><img src="img/living.jpg" alt="Гостиная в тёплом минимализме, реализованный объект" fetchpriority="high"></div>
+
+  <div class="wrap hero__top">
+    <h1 class="t-mono hero__seo">Дизайн и ремонт квартир и домов под ключ · Краснодар</h1>
+    <p class="t-display hero__title" id="hero-title">Ремонт, в&nbsp;который<br>вы просто заезжаете</p>
+    <p class="t-lead hero__lead">Вы один раз подписываете договор с&nbsp;фиксированной ценой. Дизайн, бригады, материалы, закупки и&nbsp;уборку мы&nbsp;берём на&nbsp;себя. Вы&nbsp;получаете ключи.</p>
+  </div>
+
+  <div class="laser hero__laser"><span class="laser__emitter"></span><span class="laser__tag">УРОВЕНЬ · ОТКЛОНЕНИЕ 0 ММ</span></div>
+
+  <div class="wrap hero__dock">
+    <!-- кнопка 1: видео -->
+    <button class="dock dock--video glass" type="button" data-video="Строярс за 2 минуты">
+      <span class="play"><svg><use href="#i-play"/></svg></span>
+      <span class="dock__txt">
+        <span class="t-mono">Видео · 2:14</span>
+        <span class="dock__title">Строярс за 2 минуты</span>
+        <span class="dock__sub">Кто мы, как идёт ремонт и что делаете вы (почти ничего)</span>
+      </span>
+    </button>
+
+    <!-- кнопка 2: мгновенный расчёт -->
+    <form class="dock dock--calc glass glass--strong" id="quick" onsubmit="return false" aria-label="Быстрый расчёт стоимости">
+      <div class="quick__row">
+        <label class="quick__area">
+          <span class="t-mono">Площадь</span>
+          <span class="quick__input"><input id="q-area" type="number" inputmode="numeric" min="20" max="600" value="72" aria-label="Площадь, квадратных метров"><i>м²</i></span>
+        </label>
+        <div class="seg quick__seg" role="group" aria-label="Класс отделки" data-seg="q-class">
+          <button type="button" data-v="base">Базовый</button>
+          <button type="button" data-v="opt" aria-pressed="true">Оптимальный</button>
+          <button type="button" data-v="prem">Премиальный</button>
+        </div>
+      </div>
+      <div class="quick__out">
+        <div><span class="t-mono">Под ключ</span><output class="quick__sum" id="q-sum">2 916 000 ₽</output></div>
+        <div><span class="t-mono">Срок</span><output class="quick__term" id="q-term">4 мес.</output></div>
+        <a class="btn btn--glass btn--s" href="#price">Подробный расчёт<svg class="arr"><use href="#i-arr"/></svg></a>
+      </div>
+    </form>
+
+    <!-- кнопка 3: портфолио -->
+    <a class="dock dock--folio glass" href="#portfolio">
+      <span class="folio__stack" aria-hidden="true">
+        <img src="img/kitchen.jpg" alt=""><img src="img/bed.jpg" alt=""><img src="img/bath.jpg" alt="">
+      </span>
+      <span class="dock__txt">
+        <span class="t-mono">Портфолио</span>
+        <span class="dock__title">48 объектов</span>
+        <span class="dock__sub">С площадью, сроком и итоговой ценой</span>
+      </span>
+      <svg class="arr dock__arr"><use href="#i-arr"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ═════════ 2. КОМУ ПОДОЙДЁМ ═════════ -->
+<section class="section fit" aria-labelledby="fit-title">
+  <div class="section__bg"><img src="img/arch.jpg" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="t-mono eyebrow">Прежде чем звонить</p>
+        <h2 class="t-h2 rv" id="fit-title">Честно о том,<br>кому мы <em>не подойдём</em></h2>
+      </div>
+      <p class="t-lead rv">Мы берём 4–5 объектов в&nbsp;год на&nbsp;бригаду и&nbsp;ведём каждый до&nbsp;ключей. Поэтому сразу говорим, с&nbsp;кем у&nbsp;нас получится, а&nbsp;с&nbsp;кем нет.</p>
+    </div>
+
+    <div class="fit__grid">
+      <div class="fit__card glass rv">
+        <p class="t-mono fit__label">Подойдём, если вы</p>
+        <ul class="fit__list">
+          <li><svg><use href="#i-check"/></svg>Хотите заехать в&nbsp;готовое, а&nbsp;не&nbsp;руководить стройкой по&nbsp;вечерам</li>
+          <li><svg><use href="#i-check"/></svg>Уже делали ремонт сами и&nbsp;больше не&nbsp;хотите</li>
+          <li><svg><use href="#i-check"/></svg>Готовы один раз утвердить дизайн-проект и&nbsp;доверить остальное</li>
+          <li><svg><use href="#i-check"/></svg>Считаете, что договор и&nbsp;смета лучше устных договорённостей</li>
+          <li><svg><use href="#i-check"/></svg>Планируете бюджет от&nbsp;25&nbsp;000&nbsp;₽ за&nbsp;м² с&nbsp;материалами</li>
+        </ul>
+      </div>
+      <div class="fit__card fit__card--no glass rv">
+        <p class="t-mono fit__label">Не подойдём, если вы</p>
+        <ul class="fit__list">
+          <li><svg><use href="#i-minus"/></svg>Ищете самую низкую цену за&nbsp;квадратный метр</li>
+          <li><svg><use href="#i-minus"/></svg>Хотите покупать материалы сами и&nbsp;менять решения по&nbsp;ходу работ</li>
+          <li><svg><use href="#i-minus"/></svg>Нужен только косметический ремонт одной комнаты</li>
+          <li><svg><use href="#i-minus"/></svg>Готовы начать без дизайн-проекта «а&nbsp;там разберёмся»</li>
+          <li><svg><use href="#i-minus"/></svg>Нужно «к&nbsp;Новому году», а&nbsp;на&nbsp;дворе ноябрь</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ 3. КАЛЬКУЛЯТОР ═════════ -->
+<section class="section calc" id="price" aria-labelledby="calc-title">
+  <div class="section__bg"><img src="img/kitchen.jpg" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="t-mono eyebrow">Калькулятор</p>
+        <h2 class="t-h2 rv" id="calc-title">Цена, которую<br>мы впишем в&nbsp;договор</h2>
+      </div>
+      <p class="t-lead rv">Расчёт по&nbsp;нашим реальным сметам за&nbsp;последний год. После замера цена фиксируется и&nbsp;не&nbsp;меняется до&nbsp;сдачи объекта.</p>
+    </div>
+
+    <div class="calc__panel glass rv">
+      <div class="calc__inputs">
+        <div class="calc__row">
+          <div class="field">
+            <span class="t-mono">Объект</span>
+            <div class="seg" role="group" aria-label="Тип объекта" data-seg="c-type">
+              <button type="button" data-v="flat" aria-pressed="true">Квартира</button>
+              <button type="button" data-v="house">Дом</button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="t-mono">Состояние</span>
+            <div class="seg" role="group" aria-label="Состояние объекта" data-seg="c-state">
+              <button type="button" data-v="new" aria-pressed="true">Новостройка</button>
+              <button type="button" data-v="old">Вторичка</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field calc__area">
+          <div class="calc__area-head">
+            <span class="t-mono">Площадь</span>
+            <span class="calc__area-val"><output id="c-area-out">72</output> м²</span>
+          </div>
+          <input class="range" id="c-area" type="range" min="20" max="400" step="1" value="72" aria-label="Площадь, квадратных метров">
+          <div class="range__scale t-mono"><span>20</span><span>100</span><span>200</span><span>300</span><span>400 м²</span></div>
+        </div>
+
+        <div class="field">
+          <span class="t-mono">Класс отделки</span>
+          <div class="tiers" role="radiogroup" aria-label="Класс отделки" data-seg="c-class">
+            <button type="button" class="tier" data-v="base" role="radio" aria-checked="false">
+              <span class="tier__name">Базовый</span>
+              <span class="tier__price">от 25 000 ₽/м²</span>
+              <span class="tier__desc">Аккуратно и&nbsp;практично. Ламинат 33&nbsp;класса, окраска стен, керамогранит в&nbsp;санузле, классические межкомнатные двери.</span>
+            </button>
+            <button type="button" class="tier" data-v="opt" role="radio" aria-checked="true" aria-pressed="true">
+              <span class="tier__name">Оптимальный</span>
+              <span class="tier__price">от 38 000 ₽/м²</span>
+              <span class="tier__desc">Продуманный интерьер. Инженерная доска, скрытые двери, теневой плинтус, трековый свет, инсталляции.</span>
+            </button>
+            <button type="button" class="tier" data-v="prem" role="radio" aria-checked="false">
+              <span class="tier__name">Премиальный</span>
+              <span class="tier__price">от 55 000 ₽/м²</span>
+              <span class="tier__desc">Без компромиссов. Шпон, микроцемент, керамогранит 120×280, сценарии освещения, умный дом.</span>
+            </button>
+          </div>
+        </div>
+
+        <label class="toggle">
+          <input type="checkbox" id="c-design" checked>
+          <span class="toggle__ui" aria-hidden="true"></span>
+          <span>Включить дизайн-проект <span class="toggle__note">без него начинать не&nbsp;советуем</span></span>
+        </label>
+      </div>
+
+      <aside class="calc__result" aria-live="polite">
+        <p class="t-mono">Итого под ключ</p>
+        <output class="calc__sum" id="c-sum">3 096 000 ₽</output>
+        <p class="calc__per"><span id="c-per">43 000</span> ₽ за м² · срок <span id="c-term">4 мес.</span></p>
+
+        <dl class="calc__lines">
+          <div><dt>Дизайн-проект</dt><dd id="c-l-design">180 000 ₽</dd></div>
+          <div><dt>Черновые работы и материалы</dt><dd id="c-l-rough">1 140 000 ₽</dd></div>
+          <div><dt>Чистовые работы</dt><dd id="c-l-fine">820 000 ₽</dd></div>
+          <div><dt>Чистовые материалы и комплектация</dt><dd id="c-l-mat">956 000 ₽</dd></div>
+        </dl>
+
+        <div class="calc__you">
+          <span class="t-mono">Ваше участие</span>
+          <p><b id="c-meet">4 встречи</b> за&nbsp;весь ремонт. Остальное — в&nbsp;еженедельном фотоотчёте в&nbsp;Telegram.</p>
+        </div>
+
+        <a class="btn btn--solid calc__cta" href="#contacts" data-prefill>Зафиксировать цену после замера<svg class="arr"><use href="#i-arr"/></svg></a>
+        <p class="calc__fine">Мебель и&nbsp;бытовая техника в&nbsp;расчёт не&nbsp;входят. Замер и&nbsp;смета — бесплатно.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ 4. ПОРТФОЛИО ═════════ -->
+<section class="section folio" id="portfolio" aria-labelledby="folio-title">
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="t-mono eyebrow">Портфолио · 48 объектов</p>
+        <h2 class="t-h2 rv" id="folio-title">Объекты, в&nbsp;которые<br>уже заехали</h2>
+      </div>
+      <p class="t-lead rv">У&nbsp;каждого объекта — реальная площадь, срок и&nbsp;итоговая сумма по&nbsp;договору. Без рендеров: только фотографии после сдачи.</p>
+    </div>
+
+    <div class="folio__filters" role="group" aria-label="Фильтр портфолио">
+      <button class="chip" type="button" data-f="all" aria-pressed="true">Все</button>
+      <button class="chip" type="button" data-f="flat">Квартиры</button>
+      <button class="chip" type="button" data-f="house">Дома</button>
+      <span class="folio__sep"></span>
+      <button class="chip" type="button" data-f="base">Базовый</button>
+      <button class="chip" type="button" data-f="opt">Оптимальный</button>
+      <button class="chip" type="button" data-f="prem">Премиальный</button>
+    </div>
+
+    <div class="folio__grid">
+      <a class="case case--xl rv" href="project.html" data-tags="flat opt">
+        <img src="img/living.jpg" alt="Квартира 86 м², тёплый минимализм" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Тёплый минимализм</p><p class="case__place">3-комнатная квартира · Фестивальный</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>86 м²</dd></div><div><dt>Срок</dt><dd>5 мес.</dd></div><div><dt>Класс</dt><dd>Оптимальный</dd></div><div><dt>По договору</dt><dd>3,3 млн ₽</dd></div></dl>
+        </div>
+      </a>
+      <a class="case rv" href="project.html" data-tags="house prem">
+        <img src="img/kitchen.jpg" alt="Кухня-гостиная в частном доме" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Дом с островной кухней</p><p class="case__place">Дом · пос. Знаменский</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>180 м²</dd></div><div><dt>Срок</dt><dd>9 мес.</dd></div><div><dt>Класс</dt><dd>Премиум</dd></div><div><dt>По договору</dt><dd>11,2 млн ₽</dd></div></dl>
+        </div>
+      </a>
+      <a class="case rv" href="project.html" data-tags="flat base">
+        <img src="img/bath.jpg" alt="Санузел с нишей и круглым зеркалом" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Светлая двушка</p><p class="case__place">2-комнатная квартира · ЮМР</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>64 м²</dd></div><div><dt>Срок</dt><dd>3,5 мес.</dd></div><div><dt>Класс</dt><dd>Базовый</dd></div><div><dt>По договору</dt><dd>1,6 млн ₽</dd></div></dl>
+        </div>
+      </a>
+      <a class="case rv" href="project.html" data-tags="flat prem">
+        <img src="img/bed.jpg" alt="Спальня с реечной стеновой панелью" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Квартира в дереве</p><p class="case__place">4-комнатная квартира · Центр</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>112 м²</dd></div><div><dt>Срок</dt><dd>7 мес.</dd></div><div><dt>Класс</dt><dd>Премиум</dd></div><div><dt>По договору</dt><dd>6,2 млн ₽</dd></div></dl>
+        </div>
+      </a>
+      <a class="case rv" href="project.html" data-tags="house opt">
+        <img src="img/house.jpg" alt="Одноэтажный дом вечером" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Дом у реки</p><p class="case__place">Дом · Краснодар, Прикубанский округ</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>210 м²</dd></div><div><dt>Срок</dt><dd>8 мес.</dd></div><div><dt>Класс</dt><dd>Оптимальный</dd></div><div><dt>По договору</dt><dd>8,0 млн ₽</dd></div></dl>
+        </div>
+      </a>
+      <a class="case rv" href="project.html" data-tags="flat base">
+        <img src="img/arch.jpg" alt="Прихожая с аркой" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Однушка с аркой</p><p class="case__place">1-комнатная квартира · Гидростроителей</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>48 м²</dd></div><div><dt>Срок</dt><dd>3 мес.</dd></div><div><dt>Класс</dt><dd>Базовый</dd></div><div><dt>По договору</dt><dd>1,2 млн ₽</dd></div></dl>
+        </div>
+      </a>
+      <a class="case case--wide rv" href="project.html" data-tags="house prem">
+        <img src="img/dining.jpg" alt="Столовая с панорамным остеклением" loading="lazy">
+        <div class="case__info glass">
+          <div><p class="case__name">Столовая с видом на сад</p><p class="case__place">Дом · Новознаменский</p></div>
+          <dl class="case__facts"><div><dt>Площадь</dt><dd>150 м²</dd></div><div><dt>Срок</dt><dd>8 мес.</dd></div><div><dt>Класс</dt><dd>Премиум</dd></div><div><dt>По договору</dt><dd>9,4 млн ₽</dd></div></dl>
+        </div>
+      </a>
+    </div>
+
+    <div class="folio__more"><a class="btn btn--glass" href="project.html">Все 48 объектов<svg class="arr"><use href="#i-arr"/></svg></a></div>
+  </div>
+</section>
+
+<!-- ═════════ 5. КАК ПРОХОДИТ РЕМОНТ ═════════ -->
+<section class="section process" id="process" aria-labelledby="process-title">
+  <div class="section__bg"><img src="img/rough.jpg" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="t-mono eyebrow">Как мы работаем</p>
+        <h2 class="t-h2 rv" id="process-title">Семь этапов.<br>Ваших — <em>четыре встречи</em></h2>
+      </div>
+      <p class="t-lead rv">Под каждым этапом — сколько вашего времени он займёт. Всё остальное мы делаем сами и&nbsp;каждую пятницу присылаем фото- и&nbsp;видеоотчёт.</p>
+    </div>
+
+    <ol class="steps">
+      <li class="step rv">
+        <span class="step__n t-mono">01</span>
+        <h3 class="step__t">Замер и&nbsp;бриф</h3>
+        <p class="step__d">Приезжаем с&nbsp;лазерным сканером, обмеряем объект, обсуждаем, как вы&nbsp;живёте.</p>
+        <p class="step__time t-mono">3–5 дней</p>
+        <p class="step__you is-you">Встреча · 1,5 часа</p>
+      </li>
+      <li class="step rv">
+        <span class="step__n t-mono">02</span>
+        <h3 class="step__t">Дизайн-проект</h3>
+        <p class="step__d">Планировка, визуализации, чертежи для бригады, спецификация каждого материала.</p>
+        <p class="step__time t-mono">4–8 недель</p>
+        <p class="step__you is-you">2 встречи · утверждение</p>
+      </li>
+      <li class="step rv">
+        <span class="step__n t-mono">03</span>
+        <h3 class="step__t">Смета и&nbsp;договор</h3>
+        <p class="step__d">Считаем до&nbsp;последнего дюбеля. Цена в&nbsp;договоре окончательная, оплата поэтапно.</p>
+        <p class="step__time t-mono">5 дней</p>
+        <p class="step__you is-you">Подпись · онлайн</p>
+      </li>
+      <li class="step rv">
+        <span class="step__n t-mono">04</span>
+        <h3 class="step__t">Черновые работы</h3>
+        <p class="step__d">Демонтаж, перегородки, электрика, сантехника, штукатурка по&nbsp;маякам, стяжка.</p>
+        <p class="step__time t-mono">6–10 недель</p>
+        <p class="step__you">Без вашего участия</p>
+      </li>
+      <li class="step rv">
+        <span class="step__n t-mono">05</span>
+        <h3 class="step__t">Чистовая отделка</h3>
+        <p class="step__d">Плитка, полы, покраска, двери, свет. Технадзор проверяет каждый этап по&nbsp;чек-листу.</p>
+        <p class="step__time t-mono">6–12 недель</p>
+        <p class="step__you">Без вашего участия</p>
+      </li>
+      <li class="step rv">
+        <span class="step__n t-mono">06</span>
+        <h3 class="step__t">Комплектация</h3>
+        <p class="step__d">Заказываем, принимаем и&nbsp;монтируем всё по&nbsp;спецификации — от&nbsp;смесителей до&nbsp;карнизов.</p>
+        <p class="step__time t-mono">параллельно</p>
+        <p class="step__you">Без вашего участия</p>
+      </li>
+      <li class="step rv">
+        <span class="step__n t-mono">07</span>
+        <h3 class="step__t">Клининг и&nbsp;ключи</h3>
+        <p class="step__d">Профессиональная уборка, акт приёмки, гарантийный паспорт объекта на&nbsp;3&nbsp;года.</p>
+        <p class="step__time t-mono">2 дня</p>
+        <p class="step__you is-you">Приёмка · 2 часа</p>
+      </li>
+    </ol>
+    <div class="steps__legend t-mono"><span class="lg lg--you"></span>Нужны вы <span class="lg"></span>Работаем сами</div>
+  </div>
+</section>
+
+<!-- ═════════ 6. ВИДЕООТЗЫВЫ ═════════ -->
+<section class="section reviews" id="reviews" aria-labelledby="reviews-title">
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="t-mono eyebrow">Видеоотзывы</p>
+        <h2 class="t-h2 rv" id="reviews-title">Сняли в&nbsp;день,<br>когда отдали ключи</h2>
+      </div>
+      <p class="t-lead rv">Без сценария, монтажа и&nbsp;актёров. Каждый клиент готов ответить на&nbsp;ваш звонок — контакты дадим на&nbsp;встрече.</p>
+    </div>
+
+    <div class="reviews__row">
+      <button class="review rv" type="button" data-video="Анна и Олег · 86 м²">
+        <img src="img/living.jpg" alt="" loading="lazy">
+        <span class="play"><svg><use href="#i-play"/></svg></span>
+        <span class="review__info glass">
+          <span class="review__q">«Мы ни разу не приехали на объект без повода»</span>
+          <span class="review__who">Анна и Олег<span>Квартира 86 м² · 1:48</span></span>
+        </span>
+      </button>
+      <button class="review rv" type="button" data-video="Сергей · 180 м²">
+        <img src="img/kitchen.jpg" alt="" loading="lazy" style="object-position:70% 50%">
+        <span class="play"><svg><use href="#i-play"/></svg></span>
+        <span class="review__info glass">
+          <span class="review__q">«Второй ремонт в жизни и первый без нервов»</span>
+          <span class="review__who">Сергей<span>Дом 180 м² · 2:31</span></span>
+        </span>
+      </button>
+      <button class="review rv" type="button" data-video="Марина · 64 м²">
+        <img src="img/bath.jpg" alt="" loading="lazy" style="object-position:80% 50%">
+        <span class="play"><svg><use href="#i-play"/></svg></span>
+        <span class="review__info glass">
+          <span class="review__q">«Смета не выросла ни на рубль»</span>
+          <span class="review__who">Марина<span>Квартира 64 м² · 1:12</span></span>
+        </span>
+      </button>
+      <button class="review rv" type="button" data-video="Игорь и Вера · 112 м²">
+        <img src="img/bed.jpg" alt="" loading="lazy" style="object-position:20% 50%">
+        <span class="play"><svg><use href="#i-play"/></svg></span>
+        <span class="review__info glass">
+          <span class="review__q">«Жили в другом городе, следили по фотоотчётам»</span>
+          <span class="review__who">Игорь и Вера<span>Квартира 112 м² · 2:05</span></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ 7. О КОМПАНИИ ═════════ -->
+<section class="section about" id="about" aria-labelledby="about-title">
+  <div class="wrap about__grid">
+    <div class="about__media rv">
+      <img src="img/dining.jpg" alt="Реализованный объект: столовая с панорамными окнами" loading="lazy">
+      <figure class="about__quote glass">
+        <blockquote>«Клиент должен видеть ремонт дважды: на&nbsp;визуализации и&nbsp;в&nbsp;день, когда получает ключи. Всё, что между, — наша работа».</blockquote>
+        <figcaption><b>Имя Фамилия</b>основатель «Строярс»</figcaption>
+      </figure>
+    </div>
+    <div class="about__text">
+      <p class="t-mono eyebrow">О компании</p>
+      <h2 class="t-h2 rv" id="about-title">Дизайн-бюро и&nbsp;стройка в&nbsp;одних руках</h2>
+      <p class="t-lead rv">Дизайнер, прораб и&nbsp;закупщик у&nbsp;нас сидят в&nbsp;одном офисе. Поэтому проект не&nbsp;расходится с&nbsp;тем, что построено, а&nbsp;ответственность не&nbsp;делится между подрядчиками.</p>
+
+      <dl class="about__facts rv">
+        <div><dt class="t-num">10 лет</dt><dd>работаем в&nbsp;Краснодаре</dd></div>
+        <div><dt class="t-num">48</dt><dd>объектов сдано под ключ</dd></div>
+        <div><dt class="t-num">3 года</dt><dd>гарантии по&nbsp;договору</dd></div>
+        <div><dt class="t-num">0 ₽</dt><dd>доплат сверх сметы</dd></div>
+      </dl>
+
+      <ul class="about__rules rv">
+        <li><b>Фиксированная цена.</b> Смета — приложение к&nbsp;договору, её&nbsp;нельзя «уточнить» в&nbsp;процессе.</li>
+        <li><b>Оплата по&nbsp;этапам.</b> Платите за&nbsp;следующий этап, когда приняли предыдущий.</li>
+        <li><b>Свои бригады.</b> Не&nbsp;перепродаём объекты субподрядчикам.</li>
+        <li><b>Отчёт каждую пятницу.</b> Фото, видео и&nbsp;план на&nbsp;следующую неделю в&nbsp;Telegram.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ 8. СТАТЬИ (SEO) ═════════ -->
+<section class="section know" id="knowledge" aria-labelledby="know-title">
+  <div class="section__bg"><img src="img/plaster.jpg" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="section__head">
+      <div>
+        <p class="t-mono eyebrow">Как это делается</p>
+        <h2 class="t-h2 rv" id="know-title">Каждая работа —<br>без секретов</h2>
+      </div>
+      <p class="t-lead rv">Подробно описываем, как сделать это самому: инструменты, сроки, типичные ошибки. Прочитайте и&nbsp;решите, делать ли&nbsp;своими руками или поручить нам.</p>
+    </div>
+
+    <div class="know__grid">
+      <article class="art glass rv">
+        <p class="t-mono art__cat">Черновые работы</p>
+        <h3 class="art__t"><a href="article.html">Штукатурка стен по&nbsp;маякам своими руками</a></h3>
+        <div class="art__meta">
+          <div><span class="t-mono">Сложность</span><span class="lvl" style="--l:4"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div><span class="t-mono">Сами / мы</span><b>12 дней / 4 дня</b></div>
+        </div>
+        <a class="art__cta" href="article.html">Заказать у нас оштукатуривание стен<svg class="arr"><use href="#i-arr"/></svg></a>
+      </article>
+      <article class="art glass rv">
+        <p class="t-mono art__cat">Черновые работы</p>
+        <h3 class="art__t"><a href="article.html">Полусухая стяжка пола: технология по&nbsp;шагам</a></h3>
+        <div class="art__meta">
+          <div><span class="t-mono">Сложность</span><span class="lvl" style="--l:4"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div><span class="t-mono">Сами / мы</span><b>6 дней / 1 день</b></div>
+        </div>
+        <a class="art__cta" href="article.html">Заказать у нас стяжку пола<svg class="arr"><use href="#i-arr"/></svg></a>
+      </article>
+      <article class="art glass rv">
+        <p class="t-mono art__cat">Чистовая отделка</p>
+        <h3 class="art__t"><a href="article.html">Укладка керамогранита 120×60 без перепадов</a></h3>
+        <div class="art__meta">
+          <div><span class="t-mono">Сложность</span><span class="lvl" style="--l:5"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div><span class="t-mono">Сами / мы</span><b>9 дней / 3 дня</b></div>
+        </div>
+        <a class="art__cta" href="article.html">Заказать у нас укладку плитки<svg class="arr"><use href="#i-arr"/></svg></a>
+      </article>
+      <article class="art glass rv">
+        <p class="t-mono art__cat">Инженерия</p>
+        <h3 class="art__t"><a href="article.html">Электромонтаж в&nbsp;квартире: от&nbsp;схемы до&nbsp;щита</a></h3>
+        <div class="art__meta">
+          <div><span class="t-mono">Сложность</span><span class="lvl" style="--l:5"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div><span class="t-mono">Сами / мы</span><b>нужен допуск</b></div>
+        </div>
+        <a class="art__cta" href="article.html">Заказать у нас электромонтаж<svg class="arr"><use href="#i-arr"/></svg></a>
+      </article>
+      <article class="art glass rv">
+        <p class="t-mono art__cat">Санузел</p>
+        <h3 class="art__t"><a href="article.html">Гидроизоляция санузла, которая не&nbsp;подведёт соседей</a></h3>
+        <div class="art__meta">
+          <div><span class="t-mono">Сложность</span><span class="lvl" style="--l:3"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div><span class="t-mono">Сами / мы</span><b>4 дня / 1 день</b></div>
+        </div>
+        <a class="art__cta" href="article.html">Заказать у нас гидроизоляцию<svg class="arr"><use href="#i-arr"/></svg></a>
+      </article>
+      <article class="art glass rv">
+        <p class="t-mono art__cat">Чистовая отделка</p>
+        <h3 class="art__t"><a href="article.html">Покраска стен под скользящий свет</a></h3>
+        <div class="art__meta">
+          <div><span class="t-mono">Сложность</span><span class="lvl" style="--l:3"><i></i><i></i><i></i><i></i><i></i></span></div>
+          <div><span class="t-mono">Сами / мы</span><b>8 дней / 3 дня</b></div>
+        </div>
+        <a class="art__cta" href="article.html">Заказать у нас покраску стен<svg class="arr"><use href="#i-arr"/></svg></a>
+      </article>
+    </div>
+    <div class="folio__more"><a class="btn btn--glass" href="article.html">Все статьи · 34<svg class="arr"><use href="#i-arr"/></svg></a></div>
+  </div>
+</section>
+
+<!-- ═════════ 9. КОНТАКТЫ ═════════ -->
+<section class="section contacts" id="contacts" aria-labelledby="contacts-title">
+  <div class="section__bg"><img src="img/house.jpg" alt="" loading="lazy"></div>
+  <div class="wrap contacts__grid">
+    <div class="contacts__text">
+      <p class="t-mono eyebrow">Контакты</p>
+      <h2 class="t-h2 rv" id="contacts-title">Расскажите об&nbsp;объекте</h2>
+      <p class="t-lead rv">Ответим в&nbsp;течение 30&nbsp;минут в&nbsp;рабочее время — там, где вам удобно. Без звонков-«дожимов» и&nbsp;рассылок.</p>
+
+      <dl class="contacts__list">
+        <div><dt class="t-mono">Телефон</dt><dd><a href="tel:+79000000000">+7 900 000-00-00</a></dd></div>
+        <div><dt class="t-mono">Почта</dt><dd><a href="mailto:hello@stroyars.ru">hello@stroyars.ru</a></dd></div>
+        <div><dt class="t-mono">Офис</dt><dd>Краснодар, ул. Название, 00<br><span>Пн–Пт 9:00–19:00, по записи</span></dd></div>
+      </dl>
+      <div class="socials">
+        <a class="chip" href="#">Telegram</a><a class="chip" href="#">WhatsApp</a><a class="chip" href="#">ВКонтакте</a><a class="chip" href="#">YouTube</a><a class="chip" href="#">Дзен</a>
+      </div>
+    </div>
+
+    <form class="lead glass glass--strong rv" id="lead" onsubmit="return window.sendLead(event)">
+      <p class="t-h3">Заявка на&nbsp;замер</p>
+      <p class="lead__prefill t-mono" id="lead-prefill" hidden></p>
+      <div class="lead__row">
+        <div class="field"><label class="t-mono" for="l-name">Имя</label><input class="input" id="l-name" name="name" autocomplete="name" placeholder="Как к вам обращаться" required></div>
+        <div class="field"><label class="t-mono" for="l-phone">Телефон</label><input class="input" id="l-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7" required></div>
+      </div>
+      <div class="lead__row">
+        <div class="field"><label class="t-mono" for="l-area">Площадь, м²</label><input class="input" id="l-area" name="area" type="number" placeholder="72"></div>
+        <div class="field"><label class="t-mono" for="l-where">Где объект</label><input class="input" id="l-where" name="where" placeholder="Район или ЖК"></div>
+      </div>
+      <div class="field">
+        <span class="t-mono">Куда ответить</span>
+        <div class="lead__chips" role="group" aria-label="Куда ответить" data-seg="l-via">
+          <button class="chip" type="button" data-v="tg" aria-pressed="true">Telegram</button>
+          <button class="chip" type="button" data-v="wa">WhatsApp</button>
+          <button class="chip" type="button" data-v="call">Позвонить</button>
+        </div>
+      </div>
+      <button class="btn btn--solid lead__btn" type="submit">Отправить заявку<svg class="arr"><use href="#i-arr"/></svg></button>
+      <p class="lead__legal">Нажимая кнопку, вы соглашаетесь с&nbsp;<a href="#">политикой обработки данных</a>.</p>
+      <div class="lead__done" hidden>
+        <p class="t-h3">Заявка отправлена</p>
+        <p class="t-lead">Менеджер напишет вам в&nbsp;течение 30&nbsp;минут.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div>
+      <a class="logo" href="index.html"><span class="logo__mark"></span>Строярс</a>
+      <p class="t-lead" style="margin-top:22px;font-size:16px;max-width:320px">Дизайн и&nbsp;ремонт квартир и&nbsp;домов под&nbsp;ключ в&nbsp;Краснодаре и&nbsp;пригороде.</p>
+    </div>
+    <div><h4 class="t-mono">Услуги</h4><ul><li><a href="#price">Ремонт квартир под ключ</a></li><li><a href="#price">Ремонт домов и коттеджей</a></li><li><a href="#price">Дизайн-проект интерьера</a></li><li><a href="#process">Комплектация объекта</a></li></ul></div>
+    <div><h4 class="t-mono">Компания</h4><ul><li><a href="#portfolio">Портфолио</a></li><li><a href="#reviews">Видеоотзывы</a></li><li><a href="#about">О компании</a></li><li><a href="#knowledge">Статьи</a></li></ul></div>
+    <div><h4 class="t-mono">Связь</h4><ul><li><a href="tel:+79000000000">+7 900 000-00-00</a></li><li><a href="#">Telegram</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">ВКонтакте</a></li></ul></div>
+  </div>
+  <div class="footer__word" aria-hidden="true">СТРОЯРС</div>
+  <div class="footer__legal"><div class="wrap" style="display:flex;justify-content:space-between"><span>© 2026 ООО «Строярс» · ИНН 0000000000</span><a href="#">Политика конфиденциальности</a></div></div>
+</footer>
+
+<!-- видео -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Видео">
+  <div class="modal__box glass">
+    <img src="img/dining.jpg" alt="">
+    <button class="modal__close" type="button" aria-label="Закрыть видео"><svg width="18" height="18"><use href="#i-x"/></svg></button>
+    <div class="modal__caption"><div><p class="t-mono">Здесь будет видео</p><p class="t-h3" id="modal-title">Строярс за 2 минуты</p></div><span class="play"><svg><use href="#i-play"/></svg></span></div>
+    <div class="modal__bar"><i></i></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
